@@ -1,0 +1,37 @@
+name: Build Debian Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'nushell version number, i.e. 0.89.0'
+        required: true
+        default: '0.89.0'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  package:
+    name: debian package
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: main
+        fetch-depth: 0
+
+    - name: Setup Nushell
+      uses: hustcer/setup-nu@v3.8
+      with:
+        version: 0.89.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: build .deb
+      id: nu
+      run: nu apt/main.nu ${{ github.event.inputs.version }}
+
+    # TODO: publish

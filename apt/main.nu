@@ -46,6 +46,7 @@ export def main [
     rm --permanent --recursive $dir_base
 
     print "debian packaging complete"
+    echo $"archive=($dir_base).deb" | save --append $env.GITHUB_OUTPUT
     return $"($dir_base).deb"
 }
 
