@@ -2,9 +2,9 @@
 export def main [
     version: string, # the version of nushell to create a .deb file for
 ] {
-    let tmpdir     = $env.PWD
+    let build_dir  = $env.PWD
     let name       = $"nu-($version)-x86_64-linux-gnu-full"
-    let dir_base   = $"($tmpdir)/($name)"
+    let dir_base   = $"($build_dir)/($name)"
     let dir_debian = $"($dir_base)/DEBIAN"
     let dir_bins   = $"($dir_base)/usr/local/bin"
     let url        = $"https://github.com/nushell/nushell/releases/download/($version)/($name).tar.gz"
