@@ -2,7 +2,7 @@
 export def main [
     version: string, # the version of nushell to create a .deb file for
 ] {
-    let tmpdir     = mktemp -d
+    let tmpdir     = $env.PWD
     let name       = $"nu-($version)-x86_64-linux-gnu-full"
     let dir_base   = $"($tmpdir)/($name)"
     let dir_debian = $"($dir_base)/DEBIAN"
