@@ -8,20 +8,17 @@ on:
         required: true
         default: '0.89.0'
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   package:
     name: debian package
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v4
       with:
         ref: main
         fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Setup Nushell
       uses: hustcer/setup-nu@v3.8
@@ -34,4 +31,11 @@ jobs:
       id: nu
       run: nu apt/main.nu ${{ github.event.inputs.version }}
 
-    # TODO: publish
+    - name: push package to packagecloud.io
+      uses: computology/packagecloud-github-action@v0.8
+      with:
+        PACKAGE-NAME: ${{ steps.nu.outputs.archive }}
+        PACKAGECLOUD-USERNAME: ${{ secrets.PKGCLOUD_USER}}
+        PACKAGECLOUD-REPONAME: nushell
+        PACKAGECLOUD-DISTRO: ubuntu/jammy
+        PACKAGECLOUD-TOKEN: ${{ secrets.PKGCLOUD_TOKEN }}
