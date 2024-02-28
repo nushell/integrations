@@ -1,6 +1,9 @@
 --NOTE: this is an e2e demo configuration to add support for nushell inside neovim.
 -- inspired by kickstart.nvim the idea is to show an example you can adapt to your own config.
 
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
 --ISSUE:: todo...
 
 --INFO: Bootstrapping lazy (the package manager)
@@ -53,8 +56,10 @@ require("lazy").setup({
 			vim.cmd.colorscheme("tokyonight-night")
 		end,
 	},
-        -- Highlight todo, notes, etc in comments
-        { 'folke/todo-comments.nvim', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+
+	-- Highlight todo, notes, etc in comments
+	{ "folke/todo-comments.nvim", dependencies = { "nvim-lua/plenary.nvim" }, opts = { signs = false } },
+
 	-- Syntax highlighing, code navigation etc..
 	{
 		"nvim-treesitter/nvim-treesitter",
@@ -88,38 +93,7 @@ require("lazy").setup({
 			{ "j-hui/fidget.nvim", opts = {} },
 		},
 		config = function()
-			vim.api.nvim_create_autocmd("LspAttach", {
-				group = vim.api.nvim_create_augroup("nu-lsp-attach", { clear = true }),
-				callback = function(event)
-					local map = function(keys, func, desc)
-						vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
-					end
-
-					map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
-
-					map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
-
-					map("K", vim.lsp.buf.hover, "Hover Documentation")
-
-					map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-
-					local client = vim.lsp.get_client_by_id(event.data.client_id)
-					if client and client.server_capabilities.documentHighlightProvider then
-						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-							buffer = event.buf,
-							callback = vim.lsp.buf.document_highlight,
-						})
-
-						vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-							buffer = event.buf,
-							callback = vim.lsp.buf.clear_references,
-						})
-					end
-				end,
-			})
-
 			local capabilities = vim.lsp.protocol.make_client_capabilities()
-
 			local servers = {
 				lua_ls = {
 					settings = {
