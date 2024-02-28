@@ -44,6 +44,7 @@ vim.opt.sh = "nu"
 -- end
 
 require("lazy").setup({
+	-- Color scheme
 	{
 		"folke/tokyonight.nvim",
 		lazy = false,
@@ -53,6 +54,7 @@ require("lazy").setup({
 		end,
 	},
 
+	-- Syntax highlighing, code navigation etc..
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
@@ -71,6 +73,103 @@ require("lazy").setup({
 				auto_install = true,
 				highlight = { enable = true },
 				indent = { enable = true },
+			})
+		end,
+	},
+
+	-- LSP
+	{
+		"neovim/nvim-lspconfig",
+		dependencies = {
+			"williamboman/mason.nvim",
+			"williamboman/mason-lspconfig.nvim",
+			"WhoIsSethDaniel/mason-tool-installer.nvim",
+			{ "j-hui/fidget.nvim", opts = {} },
+		},
+		config = function()
+			vim.api.nvim_create_autocmd("LspAttach", {
+				group = vim.api.nvim_create_augroup("nu-lsp-attach", { clear = true }),
+				callback = function(event)
+					local map = function(keys, func, desc)
+						vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+					end
+
+					map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
+
+					map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
+
+					map("K", vim.lsp.buf.hover, "Hover Documentation")
+
+					map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+
+					local client = vim.lsp.get_client_by_id(event.data.client_id)
+					if client and client.server_capabilities.documentHighlightProvider then
+						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+							buffer = event.buf,
+							callback = vim.lsp.buf.document_highlight,
+						})
+
+						vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+							buffer = event.buf,
+							callback = vim.lsp.buf.clear_references,
+						})
+					end
+				end,
+			})
+
+			local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+			local servers = {
+				lua_ls = {
+					settings = {
+						Lua = {
+							runtime = { version = "LuaJIT" },
+							workspace = {
+								checkThirdParty = false,
+								library = {
+									"${3rd}/luv/library",
+									unpack(vim.api.nvim_get_runtime_file("", true)),
+								},
+							},
+						},
+					},
+				},
+			}
+
+			local ensure_installed = vim.tbl_keys(servers or {})
+			require("mason").setup()
+			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+
+			-- NOTE: nu --lsp setup taken from: https://github.com/amtoine/kickstart.nvim/blob/6aaa2f5f89156c30617a01ca8c73ce5cdd226302/lua/custom/nushell.lua#L81
+			local lspconfig = require("lspconfig")
+			local configs = require("lspconfig.configs")
+			configs.nulsp = {
+				default_config = {
+					cmd = { "nu", "--lsp" },
+					filetypes = { "nu" },
+					root_dir = function(fname)
+						local git_root = lspconfig.util.find_git_ancestor(fname)
+						if git_root then
+							return git_root
+						else
+							return vim.fn.fnamemodify(fname, ":p:h") -- get the parent directory of the file
+						end
+					end,
+				},
+			}
+			lspconfig.nulsp.setup({ capabilities = capabilities })
+			require("mason-lspconfig").setup({
+				handlers = {
+					function(server_name)
+						local server = servers[server_name] or {}
+						require("lspconfig")[server_name].setup({
+							cmd = server.cmd,
+							settings = server.settings,
+							filetypes = server.filetypes,
+							capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {}),
+						})
+					end,
+				},
 			})
 		end,
 	},
