@@ -115,24 +115,8 @@ require("lazy").setup({
 			require("mason").setup()
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
-			-- NOTE: nu --lsp setup taken from: https://github.com/amtoine/kickstart.nvim/blob/6aaa2f5f89156c30617a01ca8c73ce5cdd226302/lua/custom/nushell.lua#L81
-			local lspconfig = require("lspconfig")
-			local configs = require("lspconfig.configs")
-			configs.nulsp = {
-				default_config = {
-					cmd = { "nu", "--lsp" },
-					filetypes = { "nu" },
-					root_dir = function(fname)
-						local git_root = lspconfig.util.find_git_ancestor(fname)
-						if git_root then
-							return git_root
-						else
-							return vim.fn.fnamemodify(fname, ":p:h") -- get the parent directory of the file
-						end
-					end,
-				},
-			}
-			lspconfig.nulsp.setup({ capabilities = capabilities })
+			require("lspconfig").nushell.setup({})
+
 			require("mason-lspconfig").setup({
 				handlers = {
 					function(server_name)
