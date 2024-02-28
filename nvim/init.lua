@@ -1,10 +1,14 @@
---NOTE: this is an e2e demo configuration to add support for nushell inside neovim.
+--NOTE: Minimal nushell config
+--             __  ,
+--         .--()°'.'
+--        '|, . ,'
+--         !_-(_\
+-- -
+-- this is an e2e demo configuration to add support for nushell inside neovim.
 -- inspired by kickstart.nvim the idea is to show an example you can adapt to your own config.
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-
---ISSUE:: todo...
 
 --INFO: Bootstrapping lazy (the package manager)
 -- See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
