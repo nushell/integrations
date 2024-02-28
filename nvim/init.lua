@@ -64,6 +64,7 @@ require("lazy").setup({
 			require("nvim-treesitter.configs").setup({
 				ensure_installed = {
 					"nu",
+					"lua",
 					"vim",
 					"vimdoc",
 				},
