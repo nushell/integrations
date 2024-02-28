@@ -53,7 +53,8 @@ require("lazy").setup({
 			vim.cmd.colorscheme("tokyonight-night")
 		end,
 	},
-
+        -- Highlight todo, notes, etc in comments
+        { 'folke/todo-comments.nvim', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 	-- Syntax highlighing, code navigation etc..
 	{
 		"nvim-treesitter/nvim-treesitter",
