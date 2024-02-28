@@ -51,6 +51,8 @@ vim.opt.sh = "nu"
 -- end
 
 require("lazy").setup({
+
+	-- WARN: this is optional
 	-- Color scheme
 	{
 		"folke/tokyonight.nvim",
@@ -61,9 +63,11 @@ require("lazy").setup({
 		end,
 	},
 
+	-- WARN: this is optional
 	-- Highlight todo, notes, etc in comments
 	{ "folke/todo-comments.nvim", dependencies = { "nvim-lua/plenary.nvim" }, opts = { signs = false } },
 
+	-- NOTE: Use the official treesitter definition (nushell/tree-sitter-nu)
 	-- Syntax highlighing, code navigation etc..
 	{
 		"nvim-treesitter/nvim-treesitter",
@@ -87,6 +91,7 @@ require("lazy").setup({
 		end,
 	},
 
+	-- NOTE: Use lsp-config that internally just call nu --lsp
 	-- LSP
 	{
 		"neovim/nvim-lspconfig",
