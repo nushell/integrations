@@ -131,7 +131,14 @@ require("lazy").setup({
 			require("mason").setup()
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
-			require("lspconfig").nushell.setup({})
+			-- NOTE: this is where you can customize the lsp setup
+			-- here we use the default options to see the available fields.
+			require("lspconfig").nushell.setup({
+				cmd = { "nu", "--lsp" },
+				filetypes = { "nu" },
+				root_dir = require("lspconfig.util").find_git_ancestor,
+				single_file_support = true,
+			})
 
 			require("mason-lspconfig").setup({
 				handlers = {
