@@ -7,12 +7,13 @@
 -- this is an e2e demo configuration to add support for nushell inside neovim.
 -- inspired by kickstart.nvim the idea is to show an example you can adapt to your own config.
 
+-- mapping the leader key to space before anything else.
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 --INFO: Bootstrapping lazy (the package manager)
+-- This will automatically install it if not found in the data directory.
 -- See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
-
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -30,6 +31,7 @@ vim.opt.sh = "nu"
 
 -- NOTE: you can instead uncomment the following to for instance provide custom config paths
 -- depending on the OS
+-- In this particular example using vim.env.HOME is also cross-platform
 
 -- utility method to detect the OS, if you use a custom config the following can be handy
 -- local function getOS()
@@ -69,6 +71,7 @@ require("lazy").setup({
 
 	-- NOTE: Use the official treesitter definition (nushell/tree-sitter-nu)
 	-- Syntax highlighing, code navigation etc..
+	-- The lua, vim and vimdoc one are optional but highly suggested for neovim.
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
@@ -91,8 +94,12 @@ require("lazy").setup({
 		end,
 	},
 
-	-- NOTE: Use lsp-config that internally just call nu --lsp
-	-- LSP
+	-- NOTE: LSP
+	-- lsp-config greatly simplifies the setup and has builtin support for nushell.
+	-- --
+	-- mason: is a TUI tool to install DAP, LSP, Linters or Formatters.
+	-- mason-lspconfig: glue between mason and lspconfig (written by mason's dev William Boman).
+	-- mason-tool-installer: allow to use ensure_installed with either the mason name or lsp name.
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
