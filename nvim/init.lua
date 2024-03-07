@@ -148,4 +148,10 @@ require("lazy").setup({
 			})
 		end,
 	},
-}, {})
+}, {
+	-- check for updates
+	checker = {
+		enabled = true,
+		notify = false,
+	},
+})
