@@ -21,15 +21,43 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
--- INFO: settings to set nushell as the shell
-vim.opt.shellredir = "--stdin < %s"
-vim.opt.shellcmdflag = "-c"
-vim.opt.shellquote = ""
-vim.opt.shellxquote = " "
-vim.opt.shellxescape = ""
+
+-- INFO: settings to set nushell as the shell for the :! command
+-- --
+-- path to the Nushell executable
 vim.opt.sh = "nu"
 
--- NOTE: you can instead uncomment the following to for instance provide custom config paths
+-- NOTE: disable temp files and use stdin and stdout pipes for filtering instead, because
+-- temp files are sourced as follows:
+--                                      "(ls) < /8aYVe5/2 out+err> /8aYVe5/3"
+--          this syntax is not valid in nu.  ~^
+-- And there is only way to change the second part with `shellredir="out+err> %s"`, but not the first.
+-- NOTE: some info about `shelltemp`: https://github.com/neovim/neovim/issues/1008
+vim.opt.shelltemp = false
+
+-- this is used in 'shelltemp' and in the 'diff' mode `nvim -d file1 file2`
+-- only if `diffopt` is set to use an external diff command `set diffopt-=internal`
+vim.opt.shellredir = "out+err> %s"
+
+-- NOTE: flags for nu:
+-- * `--stdin`       redirect all input to -c
+-- * `--no-newline`  do not append `\n` to stdout
+-- * `--commands -c` execute a command
+vim.opt.shellcmdflag = "--stdin --no-newline -c"
+
+-- disable all escaping and quoting
+vim.opt.shellxescape = ""
+vim.opt.shellxquote = ""
+vim.opt.shellquote = ""
+
+-- INFO: setup for `:make` for use with `makeprg`:
+-- * will save stderr to the nvim temp file for the quickfix buffer
+-- * also will print stdout to the output window
+-- You can specify the 'into record' part at the end for whatever you want to see on the screen
+-- NOTE: `ansi strip` strips all ansi from nushell errors
+vim.opt.shellpipe = '| complete | update stderr { ansi strip } | tee { get stderr | save --force --raw %s } | into record'
+
+-- NOTE: you can uncomment the following to for instance provide custom config paths
 -- depending on the OS
 -- In this particular example using vim.env.HOME is also cross-platform
 
