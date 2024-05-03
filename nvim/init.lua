@@ -27,19 +27,20 @@ vim.opt.rtp:prepend(lazypath)
 -- path to the Nushell executable
 vim.opt.sh = "nu"
 
--- NOTE: disable temp files and use stdin and stdout pipes for filtering instead, because
--- temp files are sourced as follows:
---                                      "(ls) < /8aYVe5/2 out+err> /8aYVe5/3"
---          this syntax is not valid in nu.  ~^
--- And there is only way to change the second part with `shellredir="out+err> %s"`, but not the first.
+-- WARN: disable the usage of temp files for shell commands
+-- because Nu doesn't support `input redirection` which Neovim uses to send buffer content to a command:
+--      `{shell_command} < {temp_file_with_selected_buffer_content}`
+-- When set to `false` the stdin pipe will be used instead.
 -- NOTE: some info about `shelltemp`: https://github.com/neovim/neovim/issues/1008
 vim.opt.shelltemp = false
 
--- this is used in 'shelltemp' and in the 'diff' mode `nvim -d file1 file2`
--- only if `diffopt` is set to use an external diff command `set diffopt-=internal`
+-- string to be used to put the output of shell commands in a temp file
+-- 1. when 'shelltemp' is `true` 
+-- 2. in the `diff-mode` (`nvim -d file1 file2`) when `diffopt` is set 
+--    to use an external diff command: `set diffopt-=internal`
 vim.opt.shellredir = "out+err> %s"
 
--- NOTE: flags for nu:
+-- flags for nu:
 -- * `--stdin`       redirect all input to -c
 -- * `--no-newline`  do not append `\n` to stdout
 -- * `--commands -c` execute a command
@@ -50,11 +51,10 @@ vim.opt.shellxescape = ""
 vim.opt.shellxquote = ""
 vim.opt.shellquote = ""
 
--- INFO: setup for `:make` for use with `makeprg`:
--- * will save stderr to the nvim temp file for the quickfix buffer
--- * also will print stdout to the output window
--- You can specify the 'into record' part at the end for whatever you want to see on the screen
--- NOTE: `ansi strip` strips all ansi from nushell errors
+-- string to be used with `:make` command to:
+-- 1. save the stderr of `makeprg` in the temp file which Neovim reads using `errorformat` to populate the `quickfix` buffer
+-- 2. show the stdout, stderr and the return_code on the screen
+-- NOTE: `ansi strip` removes all ansi coloring from nushell errors
 vim.opt.shellpipe = '| complete | update stderr { ansi strip } | tee { get stderr | save --force --raw %s } | into record'
 
 -- NOTE: you can uncomment the following to for instance provide custom config paths
