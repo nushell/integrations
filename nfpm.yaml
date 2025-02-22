@@ -1,0 +1,101 @@
+# Nushell nfpm configuration file.
+# Make sure to check the documentation at https://nfpm.goreleaser.com
+#
+# The lines below are called `modelines`. See `:help modeline`
+# Feel free to remove those if you don't want/need to use them.
+# yaml-language-server: $schema=https://nfpm.goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj
+
+# Name. (required)
+name: nushell
+
+# Architecture. (required)
+# This will expand any env var you set in the field, e.g. arch: ${GOARCH}
+# The architecture is specified using Go nomenclature (GOARCH) and translated
+# to the platform specific equivalent. In order to manually set the architecture
+# to a platform specific value, set `{format}.arch`.
+# Examples: `all`, `amd64`, `386`, `arm5`, `arm6`, `arm7`, `arm64`, `mips`,
+# `mipsle`, `mips64le`, `ppc64le`, `s390`
+# Currently supported: amd64 & arm64
+arch: ${NU_PKG_ARCH}
+
+# Platform.
+# This will expand any env var you set in the field, e.g. platform: ${GOOS}
+# This is only used by the rpm and deb packagers.
+# Examples: `linux` (default), `darwin`
+platform: linux
+
+# Version. (required)
+# This will expand any env var you set in the field, e.g. version: ${SEMVER}
+# Some package managers, like deb, require the version to start with a digit.
+# Hence, you should not prefix the version with 'v'.
+version: ${NU_VERSION}
+
+# Version Epoch.
+# A package with a higher version epoch will always be considered newer.
+# See: https://www.debian.org/doc/debian-policy/ch-controlfields.html#epochs-should-be-used-sparingly
+# epoch: 1
+
+# Version Release, aka revision.
+# This will expand any env var you set in the field, e.g. release: ${VERSION_RELEASE}
+# This is appended to the `version` after `prerelease`. This should be
+# incremented if you release an updated package of the same upstream version,
+# and it should reset to 1 when bumping the version.
+release: ${NU_VERSION_REVISION}
+
+# Section.
+# This is only used by the deb packager.
+# See: https://www.debian.org/doc/debian-policy/ch-archive.html#sections
+section: shells
+
+# Priority.
+# Defaults to `optional` on deb
+# Defaults to empty on rpm and apk
+# See: https://www.debian.org/doc/debian-policy/ch-archive.html#priorities
+priority: optional
+
+# Maintainer. (required)
+# This will expand any env var you set in the field, e.g. maintainer: ${GIT_COMMITTER_NAME} <${GIT_COMMITTER_EMAIL}>
+# Defaults to empty on rpm and apk
+# Leaving the 'maintainer' field unset will not be allowed in a future version
+maintainer: The Nushell Project Developers
+
+# Description.
+# This will expand any env var you set in the field, e.g. description: ${DESCRIPTION}
+# Defaults to `no description given`.
+# Most packagers call for a one-line synopsis of the package. Some (like deb)
+# also call for a multi-line description starting on the second line.
+description: |
+  A new type of shell
+
+# Vendor.
+# This will expand any env var you set in the field, e.g. vendor: ${VENDOR}
+# This is only used by the rpm packager.
+vendor: The Nushell Project Developers
+
+# Package's homepage.
+# This will expand any env var you set in the field, e.g. homepage: ${CI_PROJECT_URL}
+homepage: https://www.nushell.sh
+
+# License.
+license: MIT
+
+# Changelog YAML file, see: https://github.com/goreleaser/chglog
+# changelog: "changelog.yaml"
+
+# Contents to add to the package
+# This can be binaries or any other files.
+contents:
+  # Basic file that applies to all packagers
+  - src: ./release/nu
+    dst: /usr/bin/nu
+  - src: ./release/nu_plugin_inc
+    dst: /usr/bin/nu_plugin_inc
+  - src: ./release/nu_plugin_query
+    dst: /usr/bin/nu_plugin_query
+  - src: ./release/nu_plugin_gstat
+    dst: /usr/bin/nu_plugin_gstat
+  - src: ./release/nu_plugin_polars
+    dst: /usr/bin/nu_plugin_polars
+  - src: ./release/nu_plugin_formats
+    dst: /usr/bin/nu_plugin_formats

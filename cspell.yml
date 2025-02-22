@@ -1,0 +1,40 @@
+# REF:
+#   https://cspell.org/configuration/
+# Usage:
+#   npx cspell --no-progress .
+
+words:
+- nfpm
+- msvc
+- Pkgs
+- esep
+- rsort
+- cnqoj
+- DISTRO
+- ECODE
+- endfor
+- trixie
+- dotenv
+- gstat
+- subkey
+- mipsle
+- GOARCH
+- gpgkey
+- dearmor
+- gpgcheck
+- nushell
+- Gemfury
+- hustcer
+- rsbuild
+- modeline
+- modelines
+- justfile
+- lefthook
+- linewise
+- deepseek
+- Infinigence
+- postremove
+- preremove
+- goreleaser
+- rockylinux
+ignorePaths:
