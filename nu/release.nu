@@ -71,7 +71,8 @@ export def --env 'publish pkg' [
 # Create a new release on GitHub, and upload the artifacts
 def create-github-release [version: string] {
   let repo = 'nushell/integrations'
-  if (gh release view $version -R $repo) =~ 'release not found' {
+  let releases = gh release list -R $repo --json name | from json | get name
+  if $version not-in $releases {
     gh release create $version -R $repo --title $version --notes $version
   }
   gh release upload $version -R $repo nushell*.deb nushell*.rpm nushell*.apk
