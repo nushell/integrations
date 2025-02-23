@@ -33,6 +33,7 @@ words:
 - lefthook
 - linewise
 - deepseek
+- archlinux
 - loongarch
 - preremove
 - postremove

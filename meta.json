@@ -5,7 +5,8 @@
   "pkgs": {
     "deb": true,
     "rpm": true,
-    "apk": true
+    "apk": true,
+    "archlinux": true
   },
   "author": "hustcer",
   "license": "MIT",
