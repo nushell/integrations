@@ -22,6 +22,7 @@ export def 'fetch release' [
   const ARCH_MAP = {
     'amd64': 'x86_64-unknown-linux-musl',
     'arm64': 'aarch64-unknown-linux-musl',
+    'loongarch64': 'loongarch64-unknown-linux-gnu',
   }
   if $arch not-in $ARCH_MAP {
     print $'Invalid architecture: (ansi r)($arch)(ansi reset)'; exit 1
@@ -36,6 +37,7 @@ export def 'fetch release' [
   if ('release' | path exists) { rm -rf release }
   if not ('release' | path exists) { mkdir release }
   cd release
+  print $'Downloading artifact from ($download_url)...'
   http get $download_url | save -rpf nushell.tar.gz
   tar -xzf nushell.tar.gz
   cp nu-*/nu* .
@@ -47,6 +49,7 @@ export def --env 'publish pkg' [
   --create-release,   # Create a new release on GitHub
 ] {
   let meta = open meta.json
+  const ALPINE_IGNORE = [loongarch64]
   # Trim is required to remove the leading and trailing whitespaces here
   let version = run-external 'release/nu' '--version' | complete | get stdout | str trim
   let version = if ($version | is-empty) { $meta.version } else { $version }
@@ -57,7 +60,7 @@ export def --env 'publish pkg' [
   }
   if $meta.pkgs.deb { nfpm pkg --packager deb }
   if $meta.pkgs.rpm { nfpm pkg --packager rpm }
-  if $meta.pkgs.apk { nfpm pkg --packager apk }
+  if $meta.pkgs.apk and $arch not-in $ALPINE_IGNORE { nfpm pkg --packager apk }
 
   ls -f nushell* | print
 
@@ -65,7 +68,7 @@ export def --env 'publish pkg' [
 
   if $meta.pkgs.deb { push deb $arch }
   if $meta.pkgs.rpm { push rpm $arch }
-  if $meta.pkgs.apk { push apk $arch }
+  if $meta.pkgs.apk and $arch not-in $ALPINE_IGNORE { push apk $arch }
 }
 
 # Create a new release on GitHub, and upload the artifacts
