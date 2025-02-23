@@ -66,7 +66,7 @@ export def --env 'publish pkg' [
 
   ls -f nushell* | print
 
-  if $create_release { create-github-release $version $arch }
+  if $create_release { create-github-release $'($version)-($meta.revision)' $arch }
 
   if $meta.pkgs.deb { push deb $arch }
   if $meta.pkgs.rpm { push rpm $arch }
