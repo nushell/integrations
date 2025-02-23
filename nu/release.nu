@@ -98,7 +98,7 @@ export def 'push apk' [
     amd64: 'x86_64',
     arm64: 'aarch64',
   }
-  let arch = $ARCH_ALIAS_MAP | get $arch
+  let arch = $ARCH_ALIAS_MAP | get -i $arch | default $arch
   let pkg = ls | where name =~ $'($arch).apk' | get name.0
   if (pkg exists alpine $arch) { print $'Package ($pkg) already exists on Gemfury.'; return }
   print $'Uploading the ($pkg) package to Gemfury...'
@@ -122,9 +122,8 @@ export def 'push rpm' [
   const ARCH_ALIAS_MAP = {
     amd64: 'x86_64',
     arm64: 'aarch64',
-    loongarch64: 'loongarch64',
   }
-  let arch = $ARCH_ALIAS_MAP | get $arch
+  let arch = $ARCH_ALIAS_MAP | get -i $arch | default $arch
   let pkg = ls | where name =~ $'($arch).rpm' | get name.0
   if (pkg exists rpm $arch) { print $'Package ($pkg) already exists on Gemfury.'; return }
   print $'Uploading the ($pkg) package to Gemfury...'
