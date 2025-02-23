@@ -89,7 +89,8 @@ export def 'push apk' [
   let arch = $ARCH_ALIAS_MAP | get $arch
   let pkg = ls | where name =~ $'($arch).apk' | get name.0
   print $'Uploading the ($pkg) package to Gemfury...'
-  fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN
+  let result = fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN | complete
+  handle-push-result $result
 }
 
 # Publish the Nushell deb packages to Gemfury
@@ -98,7 +99,8 @@ export def 'push deb' [
 ] {
   let pkg = ls | where name =~ $'($arch).deb' | get name.0
   print $'Uploading the ($pkg) package to Gemfury...'
-  fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN
+  let result = fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN | complete
+  handle-push-result $result
 }
 
 # Publish the Nushell rpm packages to Gemfury
@@ -112,5 +114,15 @@ export def 'push rpm' [
   let arch = $ARCH_ALIAS_MAP | get $arch
   let pkg = ls | where name =~ $'($arch).rpm' | get name.0
   print $'Uploading the ($pkg) package to Gemfury...'
-  fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN
+  let result = fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN | complete
+  handle-push-result $result
+}
+
+def handle-push-result [result] {
+  if $result.stderr =~ 'already exists' {
+    print 'Package already exists, ignored...'; return
+  }
+  print $result.stdout
+  if ($result.exit_code != 0 ) { print $result.stderr }
+  exit $result.exit_code
 }
