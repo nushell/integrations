@@ -15,7 +15,12 @@
 #   - https://manage.fury.io/dashboard/nushell
 #
 
+const ARCH_ALIAS_MAP = {
+  amd64: 'x86_64',
+  arm64: 'aarch64',
+}
 const ALPINE_IGNORE = [loongarch64 riscv64]
+const RELEASE_QUERY_URL = 'https://api.github.com/repos/nushell/nushell/releases'
 
 # Fetch the latest Nushell release package from GitHub
 export def 'fetch release' [
@@ -30,8 +35,11 @@ export def 'fetch release' [
   if $arch not-in $ARCH_MAP {
     print $'Invalid architecture: (ansi r)($arch)(ansi reset)'; exit 1
   }
-  let BASE_HEADER = [Authorization $'Bearer ($env.GITHUB_TOKEN)' Accept application/vnd.github.v3+json]
-  let assets = http get -H $BASE_HEADER https://api.github.com/repos/nushell/nushell/releases
+  let BASE_HEADER = [
+      Accept application/vnd.github.v3+json
+      Authorization $'Bearer ($env.GITHUB_TOKEN)'
+    ]
+  let assets = http get -H $BASE_HEADER $RELEASE_QUERY_URL
       | sort-by -r created_at
       | select name created_at assets
       | get 0
@@ -53,7 +61,9 @@ export def --env 'publish pkg' [
 ] {
   let meta = open meta.json
   # Trim is required to remove the leading and trailing whitespaces here
-  let version = try { run-external 'release/nu' '--version' | complete | get stdout | str trim } catch { '' }
+  let version = try {
+      run-external 'release/nu' '--version' | complete | get stdout | str trim
+    } catch { '' }
   let version = if ($version | is-empty) { $meta.version } else { $version }
   load-env {
     NU_VERSION: $version
@@ -66,7 +76,6 @@ export def --env 'publish pkg' [
   if $meta.pkgs.apk and $arch not-in $ALPINE_IGNORE { nfpm pkg --packager apk }
 
   ls -f nushell* | print
-
   if $create_release { create-github-release $'($version)-($meta.revision)' $arch }
 
   if $meta.pkgs.deb { push deb $arch }
@@ -82,7 +91,7 @@ def create-github-release [
   let repo = 'nushell/integrations'
   let releases = gh release list -R $repo --json name | from json | get name
   if $version not-in $releases {
-    gh release create $version -R $repo --title $version --notes $version
+    gh release create $version -R $repo --title $version
   }
   # --clobber   Overwrite existing assets of the same name
   if $arch in $ALPINE_IGNORE {
@@ -95,13 +104,9 @@ def create-github-release [
 export def 'push apk' [
   arch: string,   # The target architecture, e.g. amd64 & arm64
 ] {
-  const ARCH_ALIAS_MAP = {
-    amd64: 'x86_64',
-    arm64: 'aarch64',
-  }
   let arch = $ARCH_ALIAS_MAP | get -i $arch | default $arch
   let pkg = ls | where name =~ $'($arch).apk' | get name.0
-  if (pkg exists alpine $arch) { print $'Package ($pkg) already exists on Gemfury.'; return }
+  if (pkg exists alpine $arch) { print $'Package ($pkg) already exists, ignored...'; return }
   print $'Uploading the ($pkg) package to Gemfury...'
   fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN
 }
@@ -111,7 +116,7 @@ export def 'push deb' [
   arch: string,   # The target architecture, e.g. amd64 & arm64
 ] {
   let pkg = ls | where name =~ $'($arch).deb' | get name.0
-  if (pkg exists deb $arch) { print $'Package ($pkg) already exists on Gemfury.'; return }
+  if (pkg exists deb $arch) { print $'Package ($pkg) already exists, ignored...'; return }
   print $'Uploading the ($pkg) package to Gemfury...'
   fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN
 }
@@ -120,13 +125,9 @@ export def 'push deb' [
 export def 'push rpm' [
   arch: string,   # The target architecture, e.g. amd64 & arm64
 ] {
-  const ARCH_ALIAS_MAP = {
-    amd64: 'x86_64',
-    arm64: 'aarch64',
-  }
   let arch = $ARCH_ALIAS_MAP | get -i $arch | default $arch
   let pkg = ls | where name =~ $'($arch).rpm' | get name.0
-  if (pkg exists rpm $arch) { print $'Package ($pkg) already exists on Gemfury.'; return }
+  if (pkg exists rpm $arch) { print $'Package ($pkg) already exists, ignored...'; return }
   print $'Uploading the ($pkg) package to Gemfury...'
   fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN
 }
