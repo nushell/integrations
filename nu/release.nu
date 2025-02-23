@@ -99,7 +99,7 @@ export def 'push deb' [
 ] {
   let pkg = ls | where name =~ $'($arch).deb' | get name.0
   print $'Uploading the ($pkg) package to Gemfury...'
-  let result = fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN
+  let result = fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN | complete
   handle-push-result $result
 }
 
@@ -114,7 +114,7 @@ export def 'push rpm' [
   let arch = $ARCH_ALIAS_MAP | get $arch
   let pkg = ls | where name =~ $'($arch).rpm' | get name.0
   print $'Uploading the ($pkg) package to Gemfury...'
-  let result = fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN
+  let result = fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN | complete
   handle-push-result $result
 }
 
@@ -123,6 +123,6 @@ def handle-push-result [result] {
     print 'Package already exists, ignored...'; return
   }
   print $result.stdout
-  print $result.stderr
+  if ($result.exit_code != 0 ) { print $result.stderr }
   exit $result.exit_code
 }
