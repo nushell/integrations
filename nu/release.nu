@@ -70,7 +70,6 @@ export def --env 'publish pkg' [
 
 # Create a new release on GitHub, and upload the artifacts
 def create-github-release [version: string] {
-  $env.GH_TOKEN = $env.GITHUB_TOKEN
   let repo = 'nushell/integrations'
   if (gh release view $version -R $repo) =~ 'release not found' {
     gh release create $version -R $repo --title $version --notes $version
