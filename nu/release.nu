@@ -15,14 +15,16 @@
 #   - https://manage.fury.io/dashboard/nushell
 #
 
+const ALPINE_IGNORE = [loongarch64]
+
 # Fetch the latest Nushell release package from GitHub
 export def 'fetch release' [
   arch: string,   # The target architecture, e.g. amd64 & arm64
 ] {
   const ARCH_MAP = {
-    'amd64': 'x86_64-unknown-linux-musl',
-    'arm64': 'aarch64-unknown-linux-musl',
-    'loongarch64': 'loongarch64-unknown-linux-gnu',
+    amd64: 'x86_64-unknown-linux-musl',
+    arm64: 'aarch64-unknown-linux-musl',
+    loongarch64: 'loongarch64-unknown-linux-gnu',
   }
   if $arch not-in $ARCH_MAP {
     print $'Invalid architecture: (ansi r)($arch)(ansi reset)'; exit 1
@@ -49,9 +51,8 @@ export def --env 'publish pkg' [
   --create-release,   # Create a new release on GitHub
 ] {
   let meta = open meta.json
-  const ALPINE_IGNORE = [loongarch64]
   # Trim is required to remove the leading and trailing whitespaces here
-  let version = run-external 'release/nu' '--version' | complete | get stdout | str trim
+  let version = try { run-external 'release/nu' '--version' | complete | get stdout | str trim } catch { '' }
   let version = if ($version | is-empty) { $meta.version } else { $version }
   load-env {
     NU_VERSION: $version
@@ -64,7 +65,7 @@ export def --env 'publish pkg' [
 
   ls -f nushell* | print
 
-  if $create_release { create-github-release $version }
+  if $create_release { create-github-release $version $arch }
 
   if $meta.pkgs.deb { push deb $arch }
   if $meta.pkgs.rpm { push rpm $arch }
@@ -72,13 +73,19 @@ export def --env 'publish pkg' [
 }
 
 # Create a new release on GitHub, and upload the artifacts
-def create-github-release [version: string] {
+def create-github-release [
+  version: string,  # The release version, e.g. 0.102.0
+  arch: string,     # The target architecture, e.g. amd64 & arm64
+] {
   let repo = 'nushell/integrations'
   let releases = gh release list -R $repo --json name | from json | get name
   if $version not-in $releases {
     gh release create $version -R $repo --title $version --notes $version
   }
   # --clobber   Overwrite existing assets of the same name
+  if $arch in $ALPINE_IGNORE {
+    gh release upload $version -R $repo --clobber nushell*.deb nushell*.rpm; return
+  }
   gh release upload $version -R $repo --clobber nushell*.deb nushell*.rpm nushell*.apk
 }
 
@@ -87,8 +94,8 @@ export def 'push apk' [
   arch: string,   # The target architecture, e.g. amd64 & arm64
 ] {
   const ARCH_ALIAS_MAP = {
-    'amd64': 'x86_64',
-    'arm64': 'aarch64',
+    amd64: 'x86_64',
+    arm64: 'aarch64',
   }
   let arch = $ARCH_ALIAS_MAP | get $arch
   let pkg = ls | where name =~ $'($arch).apk' | get name.0
@@ -112,8 +119,9 @@ export def 'push rpm' [
   arch: string,   # The target architecture, e.g. amd64 & arm64
 ] {
   const ARCH_ALIAS_MAP = {
-    'amd64': 'x86_64',
-    'arm64': 'aarch64',
+    amd64: 'x86_64',
+    arm64: 'aarch64',
+    loongarch64: 'loongarch64',
   }
   let arch = $ARCH_ALIAS_MAP | get $arch
   let pkg = ls | where name =~ $'($arch).rpm' | get name.0
