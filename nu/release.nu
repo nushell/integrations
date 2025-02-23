@@ -62,6 +62,7 @@ export def --env 'publish pkg' [
   }
   if $meta.pkgs.deb { nfpm pkg --packager deb }
   if $meta.pkgs.rpm { nfpm pkg --packager rpm }
+  if $meta.pkgs.archlinux { nfpm pkg --packager archlinux }
   if $meta.pkgs.apk and $arch not-in $ALPINE_IGNORE { nfpm pkg --packager apk }
 
   ls -f nushell* | print
@@ -85,9 +86,9 @@ def create-github-release [
   }
   # --clobber   Overwrite existing assets of the same name
   if $arch in $ALPINE_IGNORE {
-    gh release upload $version -R $repo --clobber nushell*.deb nushell*.rpm; return
+    gh release upload $version -R $repo --clobber nushell*.deb nushell*.rpm nushell*.pkg.tar.zst; return
   }
-  gh release upload $version -R $repo --clobber nushell*.deb nushell*.rpm nushell*.apk
+  gh release upload $version -R $repo --clobber nushell*.deb nushell*.rpm nushell*.apk nushell*.pkg.tar.zst
 }
 
 # Publish the Nushell apk packages to Gemfury

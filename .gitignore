@@ -4,3 +4,4 @@ release/
 *.deb
 *.rpm
 *.apk
+*.pkg.tar.zst
