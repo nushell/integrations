@@ -10,12 +10,13 @@ words:
 - esep
 - rsort
 - cnqoj
-- DISTRO
 - ECODE
+- riscv
+- gstat
+- DISTRO
 - endfor
 - trixie
 - dotenv
-- gstat
 - subkey
 - mipsle
 - GOARCH
@@ -32,10 +33,10 @@ words:
 - lefthook
 - linewise
 - deepseek
-- Infinigence
-- postremove
+- loongarch
 - preremove
+- postremove
 - goreleaser
 - rockylinux
-- loongarch
+- Infinigence
 ignorePaths:
