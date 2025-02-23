@@ -87,6 +87,21 @@ jobs:
           which nu
           nu -c 'version'
 
+  install-on-arch:
+    name: Install Nu Arch
+    runs-on: ubuntu-24.04
+    container:
+      image: archlinux:latest
+    steps:
+      - name: Test Install Nushell
+        run: |
+          curl -s https://api.github.com/repos/nushell/integrations/releases/latest \
+            | grep browser_download_url | cut -d '"' -f 4 | grep x86_64.pkg.tar.zst \
+            | xargs wget -O nushell.pkg.tar.zst
+          pacman -U --noconfirm nushell.pkg.tar.zst
+          which nu
+          nu -c 'version'
+
   install-on-debian:
     name: Install Nu deb
     strategy:
