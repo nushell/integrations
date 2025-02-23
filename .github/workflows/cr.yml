@@ -28,8 +28,8 @@ jobs:
           # model: 'deepseek-v3'                            # Infinigence's DeepSeek V3 model
           # model: 'deepseek-r1'                            # Infinigence's DeepSeek R1 model
           # base-url: 'https://cloud.infini-ai.com/maas/v1' # Infinigence's API base URL
-          # model: 'deepseek-ai/DeepSeek-V3'                # SiliconFlow's DeepSeek V3 model
-          model: 'deepseek-ai/DeepSeek-R1'                  # SiliconFlow's DeepSeek R1 model
+          model: 'deepseek-ai/DeepSeek-V3'                  # SiliconFlow's DeepSeek V3 model
+          # model: 'deepseek-ai/DeepSeek-R1'                # SiliconFlow's DeepSeek R1 model
           base-url: 'https://api.siliconflow.cn/v1'         # SiliconFlow's API base URL
           # Store the chat token in GitHub Secrets, don't expose it in the workflow file
           chat-token: ${{ secrets.CHAT_TOKEN }}
