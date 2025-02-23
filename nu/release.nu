@@ -43,7 +43,8 @@ export def 'fetch release' [
 
 # Build the Nushell deb packages
 export def --env 'publish pkg' [
-  arch: string,   # The target architecture, e.g. amd64 & arm64
+  arch: string,       # The target architecture, e.g. amd64 & arm64
+  --create-release,   # Create a new release on GitHub
 ] {
   let meta = open meta.json
   # Trim is required to remove the leading and trailing whitespaces here
@@ -60,9 +61,21 @@ export def --env 'publish pkg' [
 
   ls -f nushell* | print
 
+  if $create_release { create-github-release $version }
+
   if $meta.pkgs.deb { push deb $arch }
   if $meta.pkgs.rpm { push rpm $arch }
   if $meta.pkgs.apk { push apk $arch }
+}
+
+# Create a new release on GitHub, and upload the artifacts
+def create-github-release [version: string] {
+  let repo = 'nushell/integrations'
+  let releases = gh release list -R $repo --json name | from json | get name
+  if $version not-in $releases {
+    gh release create $version -R $repo --title $version --notes $version
+  }
+  gh release upload $version -R $repo nushell*.deb nushell*.rpm nushell*.apk
 }
 
 # Publish the Nushell apk packages to Gemfury
