@@ -124,8 +124,9 @@ export def 'pkg exists' [
   type: string,   # The package type, e.g. deb & rpm
   arch: string,   # The target architecture, e.g. amd64 & arm64
 ] {
-  let versions = fury versions $'($type):nushell' -a nushell
-      | lines | skip 3 | str join "\n" | detect columns
+  let versions = fury versions $'($type):nushell' -a nushell --api-token $env.GEMFURY_TOKEN
+      | complete | get stdout | lines
+      | skip 3 | str join "\n" | detect columns
   let revision = $env.NU_VERSION_REVISION? | default 0 | into int
   let rev = if $type == 'alpine' { $'r($revision)' } else { $revision }
   let ver = if $revision > 0 { $'($env.NU_VERSION)-($rev)' } else { $env.NU_VERSION }
