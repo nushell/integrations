@@ -15,7 +15,7 @@
 #   - https://manage.fury.io/dashboard/nushell
 #
 
-const ALPINE_IGNORE = [loongarch64]
+const ALPINE_IGNORE = [loongarch64 riscv64]
 
 # Fetch the latest Nushell release package from GitHub
 export def 'fetch release' [
@@ -24,6 +24,7 @@ export def 'fetch release' [
   const ARCH_MAP = {
     amd64: 'x86_64-unknown-linux-musl',
     arm64: 'aarch64-unknown-linux-musl',
+    riscv64: 'riscv64gc-unknown-linux-gnu',
     loongarch64: 'loongarch64-unknown-linux-gnu',
   }
   if $arch not-in $ARCH_MAP {

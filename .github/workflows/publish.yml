@@ -85,6 +85,8 @@ jobs:
         run: |
           use ${{ github.workspace }}/nu/release.nu *
           version | print
+          fetch release riscv64
+          publish pkg riscv64 --create-release
           fetch release loongarch64
           publish pkg loongarch64 --create-release
 
