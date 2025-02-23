@@ -54,5 +54,5 @@ jobs:
               _ => 'amd64'
             }
           fetch release $arch
-          publish pkg $arch
+          publish pkg $arch --create-release
 
