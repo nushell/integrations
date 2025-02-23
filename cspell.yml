@@ -37,4 +37,5 @@ words:
 - preremove
 - goreleaser
 - rockylinux
+- loongarch
 ignorePaths:

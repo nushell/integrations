@@ -56,3 +56,35 @@ jobs:
           fetch release $arch
           publish pkg $arch --create-release
 
+  publish-others:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-22.04
+    name: Build Nu Pkgs for Other ARCHs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Nushell
+        uses: hustcer/setup-nu@v3
+
+      - name: Install nfpm & Gemfury CLI
+        run: |
+          echo "deb [trusted=yes] https://apt.fury.io/cli/ * *" | sudo tee /etc/apt/sources.list.d/fury-cli.list
+          echo 'deb [trusted=yes] https://repo.goreleaser.com/apt/ /' | sudo tee /etc/apt/sources.list.d/goreleaser.list
+          sudo apt update
+          sudo apt install nfpm fury-cli
+          nfpm --version
+          fury --version
+
+      - name: Build and Publish Nu Pkgs
+        shell: nu {0}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GEMFURY_TOKEN: ${{ secrets.GEMFURY_TOKEN }}
+        run: |
+          use ${{ github.workspace }}/nu/release.nu *
+          version | print
+          fetch release loongarch64
+          publish pkg loongarch64 --create-release
+
