@@ -118,8 +118,9 @@ export def 'push rpm' [
   handle-push-result $result
 }
 
+# Handle the push result, ignore the existing package
 def handle-push-result [result] {
-  if $result.stderr =~ 'already exists' {
+  if $result.stdout =~ 'already exists' {
     print 'Package already exists, ignored...'; return
   }
   print $result.stdout
