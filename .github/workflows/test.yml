@@ -1,0 +1,113 @@
+# Description:
+#   - Release Nu Pkgs
+# REF:
+#   - https://github.com/marketplace/actions/checkout
+#   - https://gemfury.com/guide/alpine/configure-apk/
+
+name: Test Install Nu Pkgs
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
+
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  install-apk:
+    name: Install Nu apk
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    container:
+      image: alpine:latest
+    steps:
+      - name: Install Nushell APK
+        run: |
+          # Append Gemfury Nushell apk repository
+          echo "https://alpine.fury.io/nushell/" | tee -a /etc/apk/repositories
+          apk update || true
+          # Use --allow-untrusted since the apk package is not signed currently
+          apk add --allow-untrusted nushell
+          which nu
+          nu -c 'version'
+
+  install-rpm:
+    name: Install Nu rpm
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+        image:
+          - fedora:latest
+          - fedora:40
+          - fedora:39
+          - rockylinux:9
+          - rockylinux:8
+          - redhat/ubi9:latest
+          - redhat/ubi8:latest
+    runs-on: ${{ matrix.os }}
+    container:
+      image: ${{ matrix.image }}
+    steps:
+      - name: Test Install Nushell
+        run: |
+          # Create repo config file pointing to Gemfury
+          echo "[gemfury-nushell]
+          name=Gemfury Nushell Repo
+          baseurl=https://yum.fury.io/nushell/
+          enabled=1
+          gpgcheck=0
+          gpgkey=https://yum.fury.io/nushell/gpg.key" | tee /etc/yum.repos.d/fury-nushell.repo
+          # Install Nushell via dnf
+          dnf install -y nushell
+          # Print nushell version to verify installation
+          nu -c 'version'
+
+  install-deb:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-22.04-arm, ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    name: Install Nu deb@${{ matrix.os }}
+    steps:
+      - name: Test Install Nushell from Gemfury
+        run: |
+          curl -fsSL https://apt.fury.io/nushell/gpg.key | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/fury-nushell.gpg
+          echo "deb https://apt.fury.io/nushell/ /" | sudo tee /etc/apt/sources.list.d/fury.list
+          sudo apt update
+          sudo apt install nushell
+          which nu
+          nu -c 'version'
+
+  install-on-debian:
+    name: Install Nu deb
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+        image:
+          - debian:trixie
+          - debian:bookworm
+          - debian:bullseye
+    runs-on: ${{ matrix.os }}
+    container:
+      image: ${{ matrix.image }}
+    steps:
+      - name: Test Install Nushell
+        run: |
+          # Disable SSL certificate checking for apt (not recommended for production!)
+          echo 'Acquire::https::Verify-Peer "false";' | tee /etc/apt/apt.conf.d/99insecure
+          echo 'Acquire::https::Verify-Host "false";' | tee -a /etc/apt/apt.conf.d/99insecure
+          # curl & gpg are not available in debian images, so we install without verifying the gpg key
+          # Add the repository with trusted=yes so that apt does not verify package signatures
+          echo "deb [trusted=yes] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury.list
+          apt update
+          apt install nushell
+          which nu
+          nu -c 'version'

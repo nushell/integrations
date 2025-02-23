@@ -1,0 +1,15 @@
+{
+  "name": "nushell",
+  "version": "0.102.0",
+  "revision": "2",
+  "pkgs": {
+    "deb": true,
+    "rpm": true,
+    "apk": true
+  },
+  "author": "hustcer",
+  "license": "MIT",
+  "github": "https://github.com/nushell/nushell",
+  "home": "https://www.nushell.sh",
+  "description": "A new type of shell."
+}
