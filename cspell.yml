@@ -20,6 +20,7 @@ words:
 - subkey
 - mipsle
 - GOARCH
+- pacman
 - gpgkey
 - dearmor
 - gpgcheck
@@ -28,11 +29,12 @@ words:
 - hustcer
 - rsbuild
 - modeline
-- modelines
 - justfile
 - lefthook
 - linewise
 - deepseek
+- noconfirm
+- modelines
 - archlinux
 - loongarch
 - preremove
