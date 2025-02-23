@@ -1,5 +1,8 @@
 # Integrations
 
+[![Test Install Nu Pkgs](https://github.com/nushell/integrations/actions/workflows/test.yml/badge.svg)](https://github.com/nushell/integrations/actions/workflows/test.yml)
+[![Publish Nu Pkgs](https://github.com/nushell/integrations/actions/workflows/publish.yml/badge.svg)](https://github.com/nushell/integrations/actions/workflows/publish.yml)
+
 A community maintained place to gather data required for packaging Nushell and other integrations.
 
 Package and release the official Nushell binaries in `deb`, `rpm`, and `apk` etc. formats for seamless installation across Linux distributions and Alpine systems.
