@@ -86,9 +86,9 @@ def create-github-release [
   }
   # --clobber   Overwrite existing assets of the same name
   if $arch in $ALPINE_IGNORE {
-    gh release upload $version -R $repo --clobber nushell*.deb nushell*.rpm nushell*.pkg.tar.zst; return
+    gh release upload $version -R $repo --clobber nu*.deb nu*.rpm nu*.pkg.tar.zst; return
   }
-  gh release upload $version -R $repo --clobber nushell*.deb nushell*.rpm nushell*.apk nushell*.pkg.tar.zst
+  gh release upload $version -R $repo --clobber nu*.deb nu*.rpm nu*.pkg.tar.zst nu*.apk
 }
 
 # Publish the Nushell apk packages to Gemfury
