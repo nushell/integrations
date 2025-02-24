@@ -90,3 +90,37 @@ jobs:
           fetch release loongarch64
           publish pkg loongarch64 --create-release
 
+  sha256sum:
+    needs: [publish-pkgs , publish-others]
+    name: Create Sha256sum
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup Nushell
+      uses: hustcer/setup-nu@v3
+    - name: Calc Tag Name
+      id: tag
+      shell: nu {0}
+      run: |
+        let meta = open ${{ github.workspace }}/meta.json
+        let tag = $'($meta.version)-($meta.revision)'
+        $'tag_name=($tag)(char nl)' o>> $env.GITHUB_OUTPUT
+    - name: Download Release Archives
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: >-
+        gh release download ${{ steps.tag.outputs.tag_name }}
+        --repo ${{ github.repository }}
+        --pattern '*'
+        --dir release
+    - name: Create Checksums
+      run: cd release && shasum -a 256 * > ../SHA256SUMS
+    - name: Publish Checksums
+      uses: softprops/action-gh-release@v2.2.1
+      with:
+        files: SHA256SUMS
+        tag_name: ${{ steps.tag.outputs.tag_name }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
