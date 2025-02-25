@@ -78,9 +78,9 @@ export def --env 'publish pkg' [
   ls -f nushell* | print
   if $create_release { create-github-release $'($version)-($meta.revision)' $arch }
 
-  if $meta.pkgs.deb { push deb $arch }
-  if $meta.pkgs.rpm { push rpm $arch }
-  if $meta.pkgs.apk and $arch not-in $ALPINE_IGNORE { push apk $arch }
+  if $meta.pkgs.deb { push pkg deb $arch }
+  if $meta.pkgs.rpm { push pkg rpm $arch }
+  if $meta.pkgs.apk and $arch not-in $ALPINE_IGNORE { push pkg apk $arch }
 }
 
 # Create a new release on GitHub, and upload the artifacts
@@ -100,34 +100,26 @@ def create-github-release [
   gh release upload $version -R $repo --clobber nu*.deb nu*.rpm nu*.pkg.tar.zst nu*.apk
 }
 
-# Publish the Nushell apk packages to Gemfury
-export def 'push apk' [
+# Publish the Nushell packages to Gemfury
+export def 'push pkg' [
+  type: string,   # The package type, e.g. apk, deb, rpm
   arch: string,   # The target architecture, e.g. amd64 & arm64
 ] {
-  let arch = $ARCH_ALIAS_MAP | get -i $arch | default $arch
-  let pkg = ls | where name =~ $'($arch).apk' | get name.0
-  if (pkg exists alpine $arch) { print $'Package ($pkg) already exists, ignored...'; return }
-  print $'Uploading the ($pkg) package to Gemfury...'
-  fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN
-}
+  # Normalize architecture based on alias map if needed
+  let normalized_arch = if $type in [apk, rpm] {
+      $ARCH_ALIAS_MAP | get -i $arch | default $arch
+    } else { $arch }
 
-# Publish the Nushell deb packages to Gemfury
-export def 'push deb' [
-  arch: string,   # The target architecture, e.g. amd64 & arm64
-] {
-  let pkg = ls | where name =~ $'($arch).deb' | get name.0
-  if (pkg exists deb $arch) { print $'Package ($pkg) already exists, ignored...'; return }
-  print $'Uploading the ($pkg) package to Gemfury...'
-  fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN
-}
+  # Get package file based on architecture and type
+  let pkg = ls | where name =~ $'($normalized_arch)\.($type)' | get name.0
 
-# Publish the Nushell rpm packages to Gemfury
-export def 'push rpm' [
-  arch: string,   # The target architecture, e.g. amd64 & arm64
-] {
-  let arch = $ARCH_ALIAS_MAP | get -i $arch | default $arch
-  let pkg = ls | where name =~ $'($arch).rpm' | get name.0
-  if (pkg exists rpm $arch) { print $'Package ($pkg) already exists, ignored...'; return }
+  # Check if package already exists
+  let repo_type = if $type == 'apk' { 'alpine' } else { $type }
+  if (pkg exists $repo_type $normalized_arch) {
+    print $'Package ($pkg) already exists, ignored...'; return
+  }
+
+  # Upload package to Gemfury
   print $'Uploading the ($pkg) package to Gemfury...'
   fury push $pkg --account nushell --api-token $env.GEMFURY_TOKEN
 }
