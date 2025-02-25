@@ -90,12 +90,19 @@ contents:
   - src: ./release/nu
     dst: /usr/bin/nu
   - src: ./release/nu_plugin_inc
-    dst: /usr/bin/nu_plugin_inc
+    dst: /usr/libexec/nushell/nu_plugin_inc
   - src: ./release/nu_plugin_query
-    dst: /usr/bin/nu_plugin_query
+    dst: /usr/libexec/nushell/nu_plugin_query
   - src: ./release/nu_plugin_gstat
-    dst: /usr/bin/nu_plugin_gstat
+    dst: /usr/libexec/nushell/nu_plugin_gstat
   - src: ./release/nu_plugin_polars
-    dst: /usr/bin/nu_plugin_polars
+    dst: /usr/libexec/nushell/nu_plugin_polars
   - src: ./release/nu_plugin_formats
-    dst: /usr/bin/nu_plugin_formats
+    dst: /usr/libexec/nushell/nu_plugin_formats
+  - src: ./scripts/post-install.nu
+    dst: /usr/libexec/nushell/post-install.nu
+
+# Scripts to run at specific stages. (overridable)
+scripts:
+  postinstall: ./scripts/post-install.sh
+
