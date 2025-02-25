@@ -99,13 +99,18 @@ jobs:
       uses: actions/checkout@v4
     - name: Setup Nushell
       uses: hustcer/setup-nu@v3
-    - name: Calc Tag Name
+    - name: Calc Tag and Upload Source Archive
       id: tag
       shell: nu {0}
       run: |
         let meta = open ${{ github.workspace }}/meta.json
         let tag = $'($meta.version)-($meta.revision)'
         $'tag_name=($tag)(char nl)' o>> $env.GITHUB_OUTPUT
+        http get https://api.github.com/repos/nushell/nushell/tarball/($meta.version)
+          | save -rpf $'nushell-($tag)-source.tar.gz'
+        gh release upload $tag -R ${{ github.repository }} --clobber nushell-($tag)-source.tar.gz
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Download Release Archives
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
