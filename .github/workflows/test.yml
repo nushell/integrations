@@ -35,7 +35,7 @@ jobs:
           apk update || true
           # Use --allow-untrusted since the apk package is not signed currently
           apk add --allow-untrusted nushell
-          nu -c '$nu.current-exe | print; version'
+          nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
 
   install-rpm:
     name: Install Nu rpm
@@ -67,7 +67,7 @@ jobs:
           # Install Nushell via dnf
           dnf install -y nushell
           # Print nushell version to verify installation
-          nu -c '$nu.current-exe | print; version'
+          nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
 
   install-deb:
     strategy:
@@ -83,7 +83,7 @@ jobs:
           echo "deb https://apt.fury.io/nushell/ /" | sudo tee /etc/apt/sources.list.d/fury.list
           sudo apt update
           sudo apt install nushell
-          nu -c '$nu.current-exe | print; version'
+          nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
 
   install-on-arch:
     name: Install Nu on Arch Linux
@@ -98,7 +98,7 @@ jobs:
             | grep browser_download_url | cut -d '"' -f 4 | grep x86_64.pkg.tar.zst \
             | xargs wget -O nushell.pkg.tar.zst
           pacman -U --noconfirm nushell.pkg.tar.zst
-          nu -c '$nu.current-exe | print; version'
+          nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
 
   install-on-debian:
     name: Install Nu deb
@@ -124,4 +124,4 @@ jobs:
           echo "deb [trusted=yes] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury.list
           apt update
           apt install nushell
-          nu -c '$nu.current-exe | print; version'
+          nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
