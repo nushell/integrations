@@ -9,7 +9,10 @@ const PLUGIN_PATH = '/usr/libexec/nushell'
 def 'setup-plugins' [] {
   let plugin_config_dir = $nu.plugin-path | path dirname
   # This directory must exist before registering plugins
-  if not ($plugin_config_dir | path exists) { mkdir $plugin_config_dir }
+  if not ($plugin_config_dir | path exists) {
+    mkdir $plugin_config_dir
+    config reset -w
+  }
   const NU_PLUGINS = [
     nu_plugin_inc
     nu_plugin_query
