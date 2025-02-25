@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 # Author: hustcer
-# Created: 2025/03/21 19:15:20
+# Created: 2025/02/21 19:15:20
 # Description: Script to release Nushell packages for various Linux distributions.
 # Usage:
 #   docker run -it --rm -v $"(pwd):/work" --platform linux/amd64 ubuntu:latest
@@ -129,6 +129,9 @@ export def 'pkg exists' [
   type: string,   # The package type, e.g. deb & rpm
   arch: string,   # The target architecture, e.g. amd64 & arm64
 ] {
+  if ($env.GEMFURY_TOKEN? | is-empty) {
+    print $'The (ansi r)GEMFURY_TOKEN(ansi reset) is required to check the package existence'; exit 1
+  }
   let versions = fury versions $'($type):nushell' -a nushell --api-token $env.GEMFURY_TOKEN
       | complete | get stdout | lines
       | skip 3 | str join "\n" | detect columns

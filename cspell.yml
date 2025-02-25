@@ -23,12 +23,13 @@ words:
 - pacman
 - gpgkey
 - dearmor
-- gpgcheck
+- libexec
 - nushell
 - Gemfury
 - hustcer
 - rsbuild
 - modeline
+- gpgcheck
 - justfile
 - lefthook
 - linewise
