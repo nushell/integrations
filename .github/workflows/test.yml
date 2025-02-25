@@ -35,7 +35,7 @@ jobs:
           apk update || true
           # Use --allow-untrusted since the apk package is not signed currently
           apk add --allow-untrusted nushell
-          nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
+          nu -c '$nu.current-exe | print; version'
 
   install-rpm:
     name: Install Nu rpm

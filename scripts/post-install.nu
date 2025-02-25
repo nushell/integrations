@@ -7,12 +7,14 @@ const PLUGIN_PATH = '/usr/libexec/nushell'
 
 # Register the plugins after installation
 def 'setup-plugins' [] {
+
   let plugin_config_dir = $nu.plugin-path | path dirname
   # This directory must exist before registering plugins
   if not ($plugin_config_dir | path exists) {
     mkdir $plugin_config_dir
     config reset -w
   }
+
   const NU_PLUGINS = [
     nu_plugin_inc
     nu_plugin_query
@@ -20,9 +22,12 @@ def 'setup-plugins' [] {
     nu_plugin_polars
     nu_plugin_formats
   ]
+  print $'Nushell plugins were installed to (ansi g)($PLUGIN_PATH)(ansi reset)'
+  print $'(ansi g)Registering plugins...(ansi reset)'
   for p in $NU_PLUGINS {
     plugin add $'($PLUGIN_PATH)/($p)'
   }
+  # plugin list | select name version filename | print
 }
 
 def main [] {
