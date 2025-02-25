@@ -1,7 +1,7 @@
 {
   "name": "nushell",
   "version": "0.102.0",
-  "revision": "3",
+  "revision": "5",
   "pkgs": {
     "deb": true,
     "rpm": true,
