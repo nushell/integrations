@@ -52,6 +52,7 @@ export def 'fetch release' [
   http get $download_url | save -rpf nushell.tar.gz
   tar -xzf nushell.tar.gz
   cp nu-*/nu* .
+  cp nu-*/LICENSE .
 }
 
 # Build the Nushell deb packages
