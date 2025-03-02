@@ -59,6 +59,7 @@ jobs:
             }
           fetch release $arch
           publish pkg $arch --create-release
+          rm key.gpg
 
   publish-others:
     strategy:
@@ -97,6 +98,7 @@ jobs:
           publish pkg riscv64 --create-release
           fetch release loongarch64
           publish pkg loongarch64 --create-release
+          rm key.gpg
 
   sha256sum:
     needs: [publish-pkgs , publish-others]
