@@ -1,3 +1,8 @@
+# REF:
+#   - https://gemfury.com/help/gpg-signing/
+#   - https://gemfury.com/guide/alpine/configure-apk/
+#   - https://gemfury.com/help/yum-repository
+#   - https://gemfury.com/help/apt-repository/#apt-setup
 # Nushell nfpm configuration file.
 # Make sure to check the documentation at https://nfpm.goreleaser.com
 #
@@ -107,4 +112,44 @@ contents:
 # Scripts to run at specific stages. (overridable)
 scripts:
   postinstall: ./scripts/post-install.sh
+
+# Custom configuration applied only to the Deb packager.
+deb:
+  # The package is signed if a key_file is set
+  signature:
+    # Signature method, either "dpkg-sig" or "debsign".
+    # Defaults to "debsign"
+    # "dpkg-sig" is not supported in newer Debian versions.
+    method: debsign
+
+    # PGP secret key (can also be ASCII-armored). The passphrase is taken
+    # from the environment variable $NFPM_DEB_PASSPHRASE with a fallback
+    # to $NFPM_PASSPHRASE.
+    # This will expand any env var you set in the field, e.g. key_file: ${SIGNING_KEY_FILE}
+    key_file: key.gpg
+
+    # The type describes the signers role, possible values are "origin",
+    # "maint" and "archive". If unset, the type defaults to "origin".
+    type: origin
+
+    # PGP secret key id in hex format, if it is not set it will select the first subkey
+    # that has the signing flag set. You may need to set this if you want to use the primary key as the signing key
+    # This will expand any env var you set in the field, e.g. key_id: ${DEB_SIGNING_KEY_ID}
+    key_id: ${SIGNING_KEY_ID}
+
+# Custom configuration applied only to the RPM packager.
+rpm:
+  # The package is signed if a key_file is set
+  signature:
+    # PGP secret key (can also be ASCII-armored), the passphrase is taken
+    # from the environment variable $NFPM_RPM_PASSPHRASE with a fallback
+    # to $NFPM_PASSPHRASE.
+    # This will expand any env var you set in the field, e.g. key_file: ${SIGNING_KEY_FILE}
+    key_file: key.gpg
+
+    # PGP secret key id in hex format, if it is not set it will select the first subkey
+    # that has the signing flag set. You may need to set this if you want to use the primary key as the signing key
+    # or to support older versions of RPM < 4.13.0 which cannot validate a signed RPM that used a subkey to sign
+    # This will expand any env var you set in the field, e.g. key_id: ${RPM_SIGNING_KEY_ID}
+    key_id: ${SIGNING_KEY_ID}
 

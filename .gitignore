@@ -1,7 +1,10 @@
-.vscode
-release/
+
 .env
 *.deb
 *.rpm
 *.apk
 *.pkg.tar.zst
+.vscode
+key.gpg
+release/
+signing-key.pub
