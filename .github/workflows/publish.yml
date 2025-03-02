@@ -44,9 +44,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GEMFURY_TOKEN: ${{ secrets.GEMFURY_TOKEN }}
+          SIGNING_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+          SIGNING_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          NFPM_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           use ${{ github.workspace }}/nu/release.nu *
           version | print
+          echo $env.SIGNING_KEY o> key.gpg
           # $env | print
           let arch = match $env.RUNNER_ARCH {
               'X64' => 'amd64',
@@ -55,6 +59,7 @@ jobs:
             }
           fetch release $arch
           publish pkg $arch --create-release
+          rm key.gpg
 
   publish-others:
     strategy:
@@ -82,13 +87,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GEMFURY_TOKEN: ${{ secrets.GEMFURY_TOKEN }}
+          SIGNING_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+          SIGNING_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          NFPM_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           use ${{ github.workspace }}/nu/release.nu *
           version | print
+          echo $env.SIGNING_KEY o> key.gpg
           fetch release riscv64
           publish pkg riscv64 --create-release
           fetch release loongarch64
           publish pkg loongarch64 --create-release
+          rm key.gpg
 
   sha256sum:
     needs: [publish-pkgs , publish-others]

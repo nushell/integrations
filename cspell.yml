@@ -8,6 +8,8 @@ words:
 - msvc
 - Pkgs
 - esep
+- dpkg
+- maint
 - rsort
 - cnqoj
 - ECODE
@@ -22,6 +24,7 @@ words:
 - GOARCH
 - pacman
 - gpgkey
+- debsign
 - dearmor
 - libexec
 - nushell
