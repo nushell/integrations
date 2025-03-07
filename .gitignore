@@ -1,6 +1,6 @@
-
 .env
 *.deb
+*.key
 *.rpm
 *.apk
 *.pkg.tar.zst
