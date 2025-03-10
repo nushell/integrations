@@ -5,8 +5,8 @@
 
 # Remove /usr/bin/nu from /etc/shells
 def 'remove-shells' [] {
-  let shells = open /etc/shells | lines
-  $shells
+  open /etc/shells
+    | lines
     | where $it !~ '/usr/bin/nu'
     | str join "\n"
     | save -rf /etc/shells
