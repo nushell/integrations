@@ -34,7 +34,7 @@ def 'setup-plugins' [] {
 def 'add-shells' [] {
   let shells = open /etc/shells
   if not ($shells =~ $'/usr/bin/nu') {
-    echo '/usr/bin/nu' o>> /etc/shells
+    echo $'/usr/bin/nu(char nl)' o>> /etc/shells
   }
 }
 
