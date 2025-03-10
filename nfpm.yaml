@@ -106,11 +106,14 @@ contents:
     dst: /usr/libexec/nushell/nu_plugin_formats
   - src: ./scripts/post-install.nu
     dst: /usr/libexec/nushell/post-install.nu
+  - src: ./scripts/pre-remove.nu
+    dst: /usr/libexec/nushell/pre-remove.nu
   - src: ./release/LICENSE
     dst: /usr/share/licenses/nushell/LICENSE
 
 # Scripts to run at specific stages. (overridable)
 scripts:
+  preremove: ./scripts/pre-remove.sh
   postinstall: ./scripts/post-install.sh
 
 # Custom configuration applied only to the Deb packager.
