@@ -30,6 +30,15 @@ def 'setup-plugins' [] {
   # plugin list | select name version filename | print
 }
 
+# Add /usr/bin/nu to /etc/shells if it's not already there
+def 'add-shells' [] {
+  let shells = open /etc/shells
+  if not ($shells =~ $'/usr/bin/nu') {
+    echo $'/usr/bin/nu(char nl)' o>> /etc/shells
+  }
+}
+
 def main [] {
   setup-plugins
+  add-shells
 }
