@@ -4,7 +4,7 @@
 # Description: Script to run before removing Nushell.
 
 # Remove /usr/bin/nu from /etc/shells
-def 'remove-shells' [] {
+def 'remove-nu-from-shells' [] {
   open /etc/shells
     | lines
     | where $it !~ '/usr/bin/nu'
@@ -13,5 +13,5 @@ def 'remove-shells' [] {
 }
 
 def main [] {
-  remove-shells
+  remove-nu-from-shells
 }
