@@ -18,7 +18,7 @@ which nu
 nu -c 'version'
 ```
 
-## Install Nushell for RedHat/Fedora/Rocky Linux
+## Install Nushell for RedHat/Fedora/RockyLinux/AlmaLinux/OpenEuler
 
 ```nu
 echo "[gemfury-nushell]

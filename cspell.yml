@@ -43,6 +43,8 @@ words:
 - archlinux
 - loongarch
 - preremove
+- almalinux
+- openeuler
 - postremove
 - goreleaser
 - rockylinux
