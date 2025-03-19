@@ -45,7 +45,12 @@ jobs:
           gpgcheck=0
           gpgkey=https://yum.fury.io/nushell/gpg.key" | tee /etc/yum.repos.d/fury-nushell.repo
           # Install Nushell via dnf force architecture to loongarch64
-          dnf install -y nushell --forcearch=loongarch64
+          # 更新仅从 Gemfury 仓库而不是系统仓库
+          dnf clean all
+          dnf --disablerepo="*" --enablerepo="gemfury-nushell" makecache
+
+          # 安装 Nushell（仅从 Gemfury 仓库）
+          dnf --disablerepo="*" --enablerepo="gemfury-nushell" install -y nushell --nogpgcheck
           cat /etc/shells
           # Print nushell version to verify installation
           nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
