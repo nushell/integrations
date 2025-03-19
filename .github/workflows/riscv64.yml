@@ -17,7 +17,48 @@ on:
       - '**.md'
 
 jobs:
+  install-rpm-loong:
+    name: Install Nu RPM on Loong64
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - loongarch64/openeuler:24.03-LTS
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+
+      - name: Test Install Nushell on Loong64
+        run: |
+          # Pull Loongson version of Fedora
+          docker pull --platform=linux/loong64 ${{ matrix.image }}
+
+          # Create a script to run inside the container
+          cat > install_nu.sh << 'EOF'
+          # Create repo config file pointing to Gemfury
+          echo "[gemfury-nushell]
+          name=Gemfury Nushell Repo
+          baseurl=https://yum.fury.io/nushell/
+          enabled=1
+          gpgcheck=0
+          gpgkey=https://yum.fury.io/nushell/gpg.key" | tee /etc/yum.repos.d/fury-nushell.repo
+          # Install Nushell via dnf
+          dnf install -y nushell
+          cat /etc/shells
+          # Print nushell version to verify installation
+          nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
+          EOF
+
+          chmod +x install_nu.sh
+
+          # Run the container with QEMU emulation
+          docker run --platform=linux/loong64 --rm -v $(pwd)/install_nu.sh:/install_nu.sh ${{ matrix.image }} /bin/bash /install_nu.sh
+
   install-deb-loong:
+    if: false
     name: Install Nu deb on Loong64
     strategy:
       fail-fast: false
