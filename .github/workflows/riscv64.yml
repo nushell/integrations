@@ -37,6 +37,9 @@ jobs:
 
           # Create a script to run inside the container
           cat > install_nu.sh << 'EOF'
+          # Check GLIBC version
+          echo "GLIBC version:"
+          ldd --version
           # Create repo config file pointing to Gemfury
           echo "[gemfury-nushell]
           name=Gemfury Nushell Repo
@@ -62,7 +65,7 @@ jobs:
           docker run --platform=linux/loong64 --rm -v $(pwd)/install_nu.sh:/install_nu.sh ${{ matrix.image }} /bin/bash /install_nu.sh
 
   install-deb-loong:
-    if: false
+    # if: false
     name: Install Nu deb on Loong64
     strategy:
       fail-fast: false
@@ -82,6 +85,9 @@ jobs:
 
           # Create a script to run inside the container
           cat > install_nu.sh << 'EOF'
+          # Check GLIBC version
+          echo "GLIBC version:"
+          ldd --version
           # Disable SSL certificate checking for apt (not recommended for production!)
           echo 'Acquire::https::Verify-Peer "false";' | tee /etc/apt/apt.conf.d/99insecure
           echo 'Acquire::https::Verify-Host "false";' | tee -a /etc/apt/apt.conf.d/99insecure
