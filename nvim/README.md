@@ -28,8 +28,6 @@ require("lspconfig").nushell.setup({
     vim.env.XDG_CONFIG_HOME .. "/nushell/lsp.nu",
     "--lsp",
   },
-  flags = { debounce_text_changes = 1000 },
-  filetypes = { "nu" },
 })
 ```
 
