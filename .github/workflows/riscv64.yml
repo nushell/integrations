@@ -31,10 +31,10 @@ jobs:
         with:
           platforms: all
 
-      - name: Test Install Nushell on Loongarch64
+      - name: Test Install Nushell on Loong64
         run: |
           # Pull Loongson version of Fedora
-          docker pull --platform=linux/loongarch64 ${{ matrix.image }}
+          docker pull --platform=linux/loong64 ${{ matrix.image }}
 
           # Create a script to run inside the container
           cat > install_nu.sh << 'EOF'
@@ -53,7 +53,7 @@ jobs:
           chmod +x install_nu.sh
 
           # Run the container with QEMU emulation
-          docker run --platform=ignore --rm -v $(pwd)/install_nu.sh:/install_nu.sh ${{ matrix.image }} /bin/bash /install_nu.sh
+          docker run --platform=linux/loong64 --rm -v $(pwd)/install_nu.sh:/install_nu.sh ${{ matrix.image }} /bin/bash /install_nu.sh
 
   install-deb-riscv:
     name: Install Nu deb on RISC-V
