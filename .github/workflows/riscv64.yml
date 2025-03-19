@@ -1,0 +1,63 @@
+# Description:
+#   - Release Nu Pkgs
+# REF:
+#   - https://github.com/marketplace/actions/checkout
+#   - https://gemfury.com/guide/alpine/configure-apk/
+
+name: Test Install Nu Pkgs for RISC-V
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 0 * * *' # run at 00:15 AM UTC
+  push:
+    branches:
+      - feature/riscv64
+
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  install-rpm-riscv:
+    name: Install Nu rpm on RISC-V
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04-arm]
+        image:
+          - fedora:latest
+          - fedora:40
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: riscv64
+
+      - name: Test Install Nushell on RISC-V
+        run: |
+          # Pull RISC-V version of Fedora
+          docker pull --platform=linux/riscv64 ${{ matrix.image }}
+
+          # Create a script to run inside the container
+          cat > install_nu.sh << 'EOF'
+          # Create repo config file pointing to Gemfury
+          echo "[gemfury-nushell]
+          name=Gemfury Nushell Repo
+          baseurl=https://yum.fury.io/nushell/
+          enabled=1
+          gpgcheck=0
+          gpgkey=https://yum.fury.io/nushell/gpg.key" | tee /etc/yum.repos.d/fury-nushell.repo
+
+          # Install Nushell via dnf
+          dnf install -y nushell
+
+          # Verify installation
+          cat /etc/shells
+          nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
+          EOF
+
+          chmod +x install_nu.sh
+
+          # Run the container with QEMU emulation
+          docker run --platform=linux/riscv64 --rm -v $(pwd)/install_nu.sh:/install_nu.sh ${{ matrix.image }} /bin/bash /install_nu.sh
+
