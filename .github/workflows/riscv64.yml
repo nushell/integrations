@@ -17,15 +17,16 @@ on:
       - '**.md'
 
 jobs:
-  install-rpm-riscv:
-    name: Install Nu rpm on RISC-V
+  install-deb-riscv:
+    name: Install Nu deb on RISC-V
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04-arm]
         image:
-          - openeuler/openeuler:latest
-          - openeuler/openeuler:22.03-lts
+          - debian:trixie
+          - debian:bookworm
+          - debian:bullseye
     runs-on: ${{ matrix.os }}
     steps:
       - name: Set up QEMU
@@ -40,18 +41,14 @@ jobs:
 
           # Create a script to run inside the container
           cat > install_nu.sh << 'EOF'
-          # Create repo config file pointing to Gemfury
-          echo "[gemfury-nushell]
-          name=Gemfury Nushell Repo
-          baseurl=https://yum.fury.io/nushell/
-          enabled=1
-          gpgcheck=0
-          gpgkey=https://yum.fury.io/nushell/gpg.key" | tee /etc/yum.repos.d/fury-nushell.repo
-
-          # Install Nushell via dnf
-          dnf install -y nushell
-
-          # Verify installation
+          # Disable SSL certificate checking for apt (not recommended for production!)
+          echo 'Acquire::https::Verify-Peer "false";' | tee /etc/apt/apt.conf.d/99insecure
+          echo 'Acquire::https::Verify-Host "false";' | tee -a /etc/apt/apt.conf.d/99insecure
+          # curl & gpg are not available in debian images, so we install without verifying the gpg key
+          # Add the repository with trusted=yes so that apt does not verify package signatures
+          echo "deb [trusted=yes] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury.list
+          apt update
+          apt install nushell
           cat /etc/shells
           nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
           EOF
