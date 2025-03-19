@@ -24,8 +24,8 @@ jobs:
       matrix:
         os: [ubuntu-24.04-arm]
         image:
-          - fedora:latest
-          - fedora:40
+          - openeuler/openeuler:latest
+          - openeuler/openeuler:22.03-lts
     runs-on: ${{ matrix.os }}
     steps:
       - name: Set up QEMU
