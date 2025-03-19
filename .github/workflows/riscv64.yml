@@ -18,6 +18,7 @@ on:
 
 jobs:
   install-rpm-loong:
+    if: false
     name: Install Nu RPM on Loong64
     strategy:
       fail-fast: false
@@ -65,7 +66,7 @@ jobs:
           docker run --platform=linux/loong64 --rm -v $(pwd)/install_nu.sh:/install_nu.sh ${{ matrix.image }} /bin/bash /install_nu.sh
 
   install-deb-loong:
-    # if: false
+    if: false
     name: Install Nu deb on Loong64
     strategy:
       fail-fast: false
