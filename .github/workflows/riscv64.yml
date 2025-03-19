@@ -45,7 +45,7 @@ jobs:
           # Add the repository with trusted=yes so that apt does not verify package signatures
           echo "deb [trusted=yes] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury.list
           apt update
-          apt install nushell
+          apt install -y nushell:loongarch64
           cat /etc/shells
           nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
           EOF
