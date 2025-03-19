@@ -22,12 +22,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04-arm]
         image:
           - debian:trixie
           - ubuntu:24.04
           - ubuntu:22.04
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
