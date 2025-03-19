@@ -29,9 +29,9 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: loongarch64
+          platforms: all
 
-      - name: Test Install Nushell on Loongson
+      - name: Test Install Nushell on Loongarch64
         run: |
           # Pull Loongson version of Fedora
           docker pull --platform=linux/loongarch64 ${{ matrix.image }}
