@@ -134,3 +134,42 @@ jobs:
           apt install nushell
           cat /etc/shells
           nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
+
+  install-deb-riscv:
+    name: Install Nu deb on RISC-V Arch
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - debian:trixie
+          - ubuntu:24.04
+          - ubuntu:22.04
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: riscv64
+
+      - name: Test Install Nu on RISC-V
+        run: |
+          docker pull --platform=linux/riscv64 ${{ matrix.image }}
+
+          # Create a script to run inside the container
+          cat > install_nu.sh << 'EOF'
+          # Disable SSL certificate checking for apt (not recommended for production!)
+          echo 'Acquire::https::Verify-Peer "false";' | tee /etc/apt/apt.conf.d/99insecure
+          echo 'Acquire::https::Verify-Host "false";' | tee -a /etc/apt/apt.conf.d/99insecure
+          # curl & gpg are not available in debian images, so we install without verifying the gpg key
+          # Add the repository with trusted=yes so that apt does not verify package signatures
+          echo "deb [trusted=yes] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury.list
+          apt update
+          apt install nushell
+          cat /etc/shells
+          nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
+          EOF
+
+          chmod +x install_nu.sh
+
+          # Run the container with QEMU emulation
+          docker run --platform=linux/riscv64 --rm -v $(pwd)/install_nu.sh:/install_nu.sh ${{ matrix.image }} /bin/bash /install_nu.sh
