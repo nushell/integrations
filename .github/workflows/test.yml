@@ -195,11 +195,19 @@ jobs:
 
           # Create a script to run inside the container
           cat > install_nu.sh << 'EOF'
-          # Append Gemfury Nushell apk repository
-          echo "https://alpine.fury.io/nushell/" | tee -a /etc/apk/repositories
-          apk update || true
-          # Use --allow-untrusted since the apk package is not signed currently
-          apk add --allow-untrusted nushell
+
+          rm -rf /var/cache/apk/*
+          echo "https://alpine.fury.io/nushell/" > /etc/apk/repositories.d/nushell.list
+          echo "Available Nushell versions:"
+          apk update
+          apk search -v nushell
+
+          # Explicitly install the latest version
+          echo "Installing latest version..."
+          apk add --no-cache --allow-untrusted nushell
+
+          echo "Installed version:"
+          apk info -v nushell
           cat /etc/shells
           nu -c '$nu.current-exe | print; version'
           EOF
