@@ -207,4 +207,4 @@ jobs:
           chmod +x install_nu.sh
 
           # Run the container with QEMU emulation
-          docker run --platform=linux/riscv64 --rm -v $(pwd)/install_nu.sh:/install_nu.sh ${{ matrix.image }} /bin/sh /install_nu.sh
+          docker run --login --platform=linux/riscv64 --rm -v $(pwd)/install_nu.sh:/install_nu.sh ${{ matrix.image }} /bin/sh /install_nu.sh
