@@ -136,7 +136,7 @@ jobs:
           nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
 
   install-deb-riscv:
-    name: Install Nu deb on RISC-V Arch
+    name: Install Nu deb on RISC-V
     strategy:
       fail-fast: false
       matrix:
@@ -173,3 +173,38 @@ jobs:
 
           # Run the container with QEMU emulation
           docker run --platform=linux/riscv64 --rm -v $(pwd)/install_nu.sh:/install_nu.sh ${{ matrix.image }} /bin/bash /install_nu.sh
+
+  install-apk-riscv:
+    name: Install Nu apk on RISC-V
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - alpine:latest
+          - alpine:3.20
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: riscv64
+
+      - name: Test Install Nu on RISC-V
+        run: |
+          docker pull --platform=linux/riscv64 ${{ matrix.image }}
+
+          # Create a script to run inside the container
+          cat > install_nu.sh << 'EOF'
+          # Append Gemfury Nushell apk repository
+          echo "https://alpine.fury.io/nushell/" | tee -a /etc/apk/repositories
+          apk update || true
+          # Use --allow-untrusted since the apk package is not signed currently
+          apk add --allow-untrusted nushell
+          cat /etc/shells
+          nu -c '$nu.current-exe | print; version'
+          EOF
+
+          chmod +x install_nu.sh
+
+          # Run the container with QEMU emulation
+          docker run --platform=linux/riscv64 --rm -v $(pwd)/install_nu.sh:/install_nu.sh ${{ matrix.image }} /bin/sh /install_nu.sh
