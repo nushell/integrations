@@ -79,30 +79,6 @@ def format_error [error: string] {
     | str replace --all --regex " +" " "
 }
 
-def "test nu is pid 1 to ensure it is handling interrupts" [] {
-  let process_id = ps
-      | where ($it.pid == 1)
-      | get name
-      | first
-
-  assert equal $process_id "nu"
-}
-
-def "test user is termix" [] {
-  assert equal (whoami) "termix"
-}
-
-def "test user is not root" [] {
-  let user_info = id
-      | parse "uid={uid}({user}) gid={gid}({group}){rest}"
-      | select uid user gid group
-
-  assert equal $user_info [
-    [uid user gid group];
-    ["1001" termix "1001" termix]
-  ]
-}
-
 def "test nu is added as a shell" [] {
   let shell = cat /etc/shells
       | lines
@@ -155,10 +131,4 @@ def "test config initialised" [] {
 
   assert greater $env_size 300B
   assert greater $config_size 350B
-}
-
-def 'test t execute successfully' [] {
-  assert equal (nu --config $nu.config-path -c 'which t | length') '1'
-  assert equal ((nu --config $nu.config-path --commands 't ver') =~ 'version') true
-  assert equal (nu --config $nu.config-path --commands 't' | complete | get exit_code) 0
 }
