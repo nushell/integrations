@@ -7,6 +7,8 @@
 
 use std assert
 
+const NU_VERSION = '0.103.0'
+
 def main [] {
   let test_plan = (
     scope commands
@@ -79,6 +81,24 @@ def format_error [error: string] {
     | str replace --all --regex " +" " "
 }
 
+def "test bin installed correctely" [] {
+  const paths = [
+    /usr/bin/nu,
+    /usr/libexec/nushell/nu_plugin_inc,
+    /usr/libexec/nushell/nu_plugin_formats,
+    /usr/libexec/nushell/nu_plugin_gstat,
+    /usr/libexec/nushell/nu_plugin_polars,
+    /usr/libexec/nushell/nu_plugin_query,
+  ]
+  let exist = $paths | all {|p| $p | path exists }
+  assert equal $exist true
+}
+
+def "test Nu version is correct" [] {
+  let version = nu --version
+  assert greater or equal (compare-ver $version $NU_VERSION) 0
+}
+
 def "test nu is added as a shell" [] {
   let shell = cat /etc/shells
       | lines
@@ -109,4 +129,35 @@ def "test config initialised" [] {
 
   assert greater $env_size 300B
   assert greater $config_size 350B
+}
+
+# Compare two version number, return `1` if first one is higher than second one,
+# Return `0` if they are equal, otherwise return `-1`
+# Examples:
+#   compare-ver 1.2.3 1.2.0    # Returns 1
+#   compare-ver 2.0.0 2.0.0    # Returns 0
+#   compare-ver 1.9.9 2.0.0    # Returns -1
+# Format: Expects semantic version strings (major.minor.patch)
+#   - Optional 'v' prefix
+#   - Pre-release suffixes (-beta, -rc, etc.) are ignored
+#   - Missing segments default to 0
+export def compare-ver [v1: string, v2: string] {
+  # Parse the version number: remove pre-release and build information,
+  # only take the main version part, and convert it to a list of numbers
+  def parse-ver [v: string] {
+    $v | str replace -r '^v' '' | str trim | split row -
+       | first | split row . | each { into int }
+  }
+  let a = parse-ver $v1
+  let b = parse-ver $v2
+  # Compare the major, minor, and patch parts; fill in the missing parts with 0
+  # If you want to compare more parts use the following code:
+  # for i in 0..([2 ($a | length) ($b | length)] | math max)
+  for i in 0..2 {
+    let x = $a | get -i $i | default 0
+    let y = $b | get -i $i | default 0
+    if $x > $y { return 1    }
+    if $x < $y { return (-1) }
+  }
+  0
 }
