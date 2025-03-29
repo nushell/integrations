@@ -85,10 +85,10 @@ def "test bin installed correctely" [] {
   const paths = [
     /usr/bin/nu,
     /usr/libexec/nushell/nu_plugin_inc,
-    /usr/libexec/nushell/nu_plugin_formats,
     /usr/libexec/nushell/nu_plugin_gstat,
-    /usr/libexec/nushell/nu_plugin_polars,
     /usr/libexec/nushell/nu_plugin_query,
+    /usr/libexec/nushell/nu_plugin_polars,
+    /usr/libexec/nushell/nu_plugin_formats,
   ]
   let exist = $paths | all {|p| $p | path exists }
   assert equal $exist true
