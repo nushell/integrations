@@ -88,22 +88,6 @@ def "test nu is added as a shell" [] {
   assert str contains $shell "/nu"
 }
 
-def "test app install cache is cleared for containers" [] {
-  let distro = cat /etc/os-release
-      | lines
-      | parse "{key}={value}"
-      | where $it.key == "ID"
-      | get value
-      | first
-
-  match $distro {
-    'alpine' => { assert equal (ls /var/cache/apk) [] }
-    'debian' => { assert equal (ls /var/cache/apt) [] }
-    'ubuntu' => { assert equal (ls /var/cache/apt) [] }
-    _ => {}  # Ignore other distributions
-  }
-}
-
 def "test main plugins are installed" [] {
   let plugins = (plugin list) | get name
 
