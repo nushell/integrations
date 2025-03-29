@@ -71,7 +71,7 @@ jobs:
           gpgkey=https://yum.fury.io/nushell/gpg.key" | tee /etc/yum.repos.d/fury-nushell.repo
           # Install Nushell via dnf
           dnf install -y nushell
-          nu -c 'ls $nu.default-config-dir | print; version'
+          nu -c 'version'
       - name: Checkout
         uses: actions/checkout@v4
       - name: Run Tests
@@ -91,7 +91,7 @@ jobs:
           echo "deb https://apt.fury.io/nushell/ /" | sudo tee /etc/apt/sources.list.d/fury.list
           sudo apt update
           sudo apt install nushell
-          nu -c 'ls $nu.default-config-dir | print; version'
+          nu -c 'version'
       - name: Checkout
         uses: actions/checkout@v4
       - name: Run Tests
@@ -110,7 +110,7 @@ jobs:
             | grep browser_download_url | cut -d '"' -f 4 | grep x86_64.pkg.tar.zst \
             | xargs wget -O nushell.pkg.tar.zst
           pacman -U --noconfirm nushell.pkg.tar.zst
-          nu -c 'ls $nu.default-config-dir | print; version'
+          nu -c 'version'
       - name: Checkout
         uses: actions/checkout@v4
       - name: Run Tests
@@ -140,7 +140,7 @@ jobs:
           echo "deb [trusted=yes] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury.list
           apt update
           apt install nushell
-          nu -c 'ls $nu.default-config-dir | print; version'
+          nu -c 'version'
       - name: Checkout
         uses: actions/checkout@v4
       - name: Run Tests
@@ -178,11 +178,10 @@ jobs:
           echo "deb [trusted=yes] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury.list
           apt update
           apt install nushell
-          nu -c 'ls $nu.default-config-dir | print; version'
+          nu -c 'version'
           nu /work/nu/tests.nu
           EOF
 
           chmod +x install_nu.sh
-
           # Run the container with QEMU emulation
-          docker run --platform=linux/riscv64 --rm -v $(pwd):/work ${{ matrix.image }} /bin/bash /work/install_nu.sh
+          docker run --platform=linux/riscv64 --rm -v $(pwd):/work ${{ matrix.image }} bash /work/install_nu.sh
