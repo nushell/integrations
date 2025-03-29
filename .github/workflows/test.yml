@@ -37,6 +37,10 @@ jobs:
           apk add --allow-untrusted nushell
           cat /etc/shells
           nu -c '$nu.current-exe | print; version'
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run Tests
+        run: nu nu/tests.nu
 
   install-rpm:
     name: Install Nu rpm
@@ -77,8 +81,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Run Tests
-        run: |
-          nu nu/tests.nu
+        run: nu nu/tests.nu
 
   install-deb:
     strategy:
@@ -96,6 +99,10 @@ jobs:
           sudo apt install nushell
           cat /etc/shells
           nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run Tests
+        run: nu nu/tests.nu
 
   install-on-arch:
     name: Install Nu on Arch Linux
@@ -112,6 +119,10 @@ jobs:
           pacman -U --noconfirm nushell.pkg.tar.zst
           cat /etc/shells
           nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run Tests
+        run: nu nu/tests.nu
 
   install-on-debian:
     name: Install Nu deb
@@ -139,6 +150,10 @@ jobs:
           apt install nushell
           cat /etc/shells
           nu -c '$nu.current-exe | print; ls $nu.default-config-dir | print; version'
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run Tests
+        run: nu nu/tests.nu
 
   install-deb-riscv:
     name: Install Nu deb on RISC-V

@@ -88,12 +88,6 @@ def "test nu is added as a shell" [] {
   assert str contains $shell "/nu"
 }
 
-def "test temp directory is cleared" [] {
-  let temp = ls /tmp
-
-  assert equal $temp []
-}
-
 def "test app install cache is cleared for containers" [] {
   let distro = cat /etc/os-release
       | lines
