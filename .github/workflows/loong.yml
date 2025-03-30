@@ -1,0 +1,111 @@
+# Description:
+#   - Test install Nu Pkgs
+# REF:
+#   - https://github.com/loong64
+#   - https://github.com/marketplace/actions/checkout
+#   - https://gemfury.com/guide/alpine/configure-apk/
+
+name: Test Install Nu Pkgs for Loongarch
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '25 0 * * *' # run at 00:25 AM UTC
+  push:
+    branches:
+      - main
+      - develop
+
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  install-rpm-loong:
+    if: false
+    name: Install Nu RPM on Loong64
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - ghcr.io/loong64/anolis:latest
+          - loongarch64/openeuler:24.03-LTS
+          - ghcr.io/loong64/opencloudos:latest
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test Install Nushell on Loong64
+        run: |
+          docker pull --platform=linux/loong64 ${{ matrix.image }}
+
+          # Create a script to run inside the container
+          cat > install_nu.sh << 'EOF'
+          echo "GLIBC version:"
+          ldd --version
+          # Create repo config file pointing to Gemfury
+          echo "[gemfury-nushell]
+          name=Gemfury Nushell Repo
+          baseurl=https://yum.fury.io/nushell/
+          enabled=1
+          gpgcheck=0
+          gpgkey=https://yum.fury.io/nushell/gpg.key" | tee /etc/yum.repos.d/fury-nushell.repo
+          # Install Nushell via dnf force architecture to loongarch64
+          dnf clean all
+          dnf --disablerepo="*" --enablerepo="gemfury-nushell" makecache
+          dnf --disablerepo="*" --enablerepo="gemfury-nushell" install -y nushell --nogpgcheck
+          nu -c 'version'
+          nu /work/nu/tests.nu
+          EOF
+
+          chmod +x install_nu.sh
+          # Run the container with QEMU emulation
+          docker run --platform=linux/loong64 --rm -v $(pwd):/work ${{ matrix.image }} bash /work/install_nu.sh
+
+  install-deb-loong:
+    name: Install Nu DEB on Loong64
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - ghcr.io/loong64/debian:trixie-slim
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test Install Nushell on Loong64
+        run: |
+          docker pull --platform=linux/loong64 ${{ matrix.image }}
+
+          # Create a script to run inside the container
+          cat > install_nu.sh << 'EOF'
+          echo "GLIBC version:"
+          ldd --version
+          # Disable SSL certificate checking for apt (not recommended for production!)
+          echo 'Acquire::https::Verify-Peer "false";' | tee /etc/apt/apt.conf.d/99insecure
+          echo 'Acquire::https::Verify-Host "false";' | tee -a /etc/apt/apt.conf.d/99insecure
+          # curl & gpg are not available in debian images, so we install without verifying the gpg key
+          # Add the repository with trusted=yes so that apt does not verify package signatures
+          echo "deb [trusted=yes] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury.list
+          apt update
+          # apt install -y nushell:loongarch64
+          # Use --force-architecture to override the architecture check
+          apt-get download nushell:loongarch64
+          dpkg --force-architecture -i ./nushell*.deb || true
+          apt-get -f install -y
+          nu -c 'version'
+          nu /work/nu/tests.nu
+          EOF
+
+          chmod +x install_nu.sh
+          # Run the container with QEMU emulation
+          docker run --platform=linux/loong64 --rm -v $(pwd):/work ${{ matrix.image }} bash /work/install_nu.sh
+
