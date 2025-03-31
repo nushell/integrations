@@ -43,27 +43,26 @@ jobs:
           docker pull --platform=linux/loong64 ${{ matrix.image }}
 
           # Create a script to run inside the container
-          cat > install_nu.sh << 'EOF'
+          cat > install-nu.sh << 'EOF'
           echo "GLIBC version:"
           ldd --version
-          # Create repo config file pointing to Gemfury
-          echo "[gemfury-nushell]
-          name=Gemfury Nushell Repo
+          echo "[nushell]
+          name=Nushell Repo
           baseurl=https://yum.fury.io/nushell/
           enabled=1
           gpgcheck=0
           gpgkey=https://yum.fury.io/nushell/gpg.key" | tee /etc/yum.repos.d/fury-nushell.repo
           # Install Nushell via dnf force architecture to loongarch64
           dnf clean all
-          dnf --disablerepo="*" --enablerepo="gemfury-nushell" makecache
-          dnf --disablerepo="*" --enablerepo="gemfury-nushell" install -y nushell --nogpgcheck
+          dnf --disablerepo="*" --enablerepo="nushell" makecache
+          dnf --disablerepo="*" --enablerepo="nushell" install -y nushell --nogpgcheck
           nu -c 'version'
           nu /work/nu/tests.nu
           EOF
 
-          chmod +x install_nu.sh
+          chmod +x install-nu.sh
           # Run the container with QEMU emulation
-          docker run --platform=linux/loong64 --rm -v $(pwd):/work ${{ matrix.image }} bash /work/install_nu.sh
+          docker run --platform=linux/loong64 --rm -v $(pwd):/work ${{ matrix.image }} bash /work/install-nu.sh
 
   install-deb-loong:
     name: Install Nu DEB on Loong64
@@ -86,7 +85,7 @@ jobs:
           docker pull --platform=linux/loong64 ${{ matrix.image }}
 
           # Create a script to run inside the container
-          cat > install_nu.sh << 'EOF'
+          cat > install-nu.sh << 'EOF'
           echo "GLIBC version:"
           ldd --version
           # Disable SSL certificate checking for apt (not recommended for production!)
@@ -105,7 +104,7 @@ jobs:
           nu /work/nu/tests.nu
           EOF
 
-          chmod +x install_nu.sh
+          chmod +x install-nu.sh
           # Run the container with QEMU emulation
-          docker run --platform=linux/loong64 --rm -v $(pwd):/work ${{ matrix.image }} bash /work/install_nu.sh
+          docker run --platform=linux/loong64 --rm -v $(pwd):/work ${{ matrix.image }} bash /work/install-nu.sh
 

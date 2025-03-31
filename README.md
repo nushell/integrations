@@ -21,8 +21,8 @@ nu -c 'version'
 ## Install Nushell for RedHat/Fedora/RockyLinux/AlmaLinux/OpenEuler
 
 ```nu
-echo "[gemfury-nushell]
-name=Gemfury Nushell Repo
+echo "[nushell]
+name=Nushell Repo
 baseurl=https://yum.fury.io/nushell/
 enabled=1
 gpgcheck=0
