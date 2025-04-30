@@ -7,7 +7,7 @@
 
 use std assert
 
-const NU_VERSION = '0.103.0'
+const NU_VERSION = '0.104.0'
 
 def main [] {
   let test_plan = (
