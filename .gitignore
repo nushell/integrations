@@ -7,4 +7,6 @@
 .vscode
 key.gpg
 release/
+wix/nu/
+wix/obj/
 signing-key.pub
