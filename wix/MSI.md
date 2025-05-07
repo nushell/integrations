@@ -2,8 +2,7 @@
 
 1. 准备工作 ：
 
-   - 确保已安装 Wix Toolset 6
-   - 创建一个简单的 license.rtf 文件作为许可协议
+   - 确保已安装 Wix Toolset 6.0: `dotnet tool install --global wix --version 6.0.0`
 
 2. 构建 MSI ：
 
@@ -12,14 +11,14 @@
 
 3. 安装选项 ：
 
-   - 用户范围安装： `winget install nushell.msi --scope user`
-   - 机器范围安装： `winget install nushell.msi --scope machine` （需要管理员权限）
+   - 用户范围安装： `winget install Nushell.Nushell --scope user`
+   - 机器范围安装： `winget install Nushell.Nushell --scope machine` （需要管理员权限）
 
    # For per-user installation
-   `msiexec /i bin\x64\Release\nushell-x64.msi MSIINSTALLPERUSER=1 ALLUSERS=""`
+   `msiexec /i bin\x64\Release\nu-x64.msi MSIINSTALLPERUSER=1`
 
    # For per-machine installation (requires admin privileges)
-   `msiexec /i bin\x64\Release\nushell-x64.msi ALLUSERS=1 MSIINSTALLPERUSER=""`
+   `msiexec /i bin\x64\Release\nu-x64.msi ALLUSERS=1`
 
 ## 特性说明
 
