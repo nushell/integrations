@@ -39,6 +39,7 @@
   - 检查安装完成后环境变量是否正确添加
   - 检查注册表变量是否正确设置
   - 检查 Window Terminal 配置文件是否添加
+  - 如果没有选择 Window Terminal 配置 Feature 则不会被安装
   - 如果是升级安装是否保持原来的安装路径
   - 卸载 Nushell 并检查文件/环境变量/注册表/Windows Terminal 配置文件是否被清理掉
 
@@ -51,11 +52,13 @@
   - 检查安装完成后环境变量是否正确添加
   - 检查注册表变量是否正确设置
   - 检查 Window Terminal 配置文件是否添加
+  - 如果没有选择 Window Terminal 配置 Feature 则不会被安装
   - 卸载 Nushell 并检查文件/环境变量/注册表/Windows Terminal 配置文件是否被清理掉
 
 ## 当前已知问题
 
 - 卸载的时候环境变量没有被清理掉;
+- [x] 为所有用户安装的时候没有正确安装 WindowsTerminalProfileFeature
 - [x] 为所有用户安装的时候默认安装路径是 C:\Program Files (x86)\nu 而不是 C:\Program Files\nu;
 - 安装 Scope 选择切换到为所有用户安装时默认选中的路径是 C:\Program Files (x86)\nu 而不是 C:\Program Files\nu;
 
