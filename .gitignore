@@ -3,6 +3,7 @@
 *.key
 *.rpm
 *.apk
+*log.txt
 *.pkg.tar.zst
 .vscode
 key.gpg
