@@ -56,7 +56,7 @@
 ## 当前已知问题
 
 - 卸载的时候环境变量没有被清理掉;
-- 为所有用户安装的时候默认安装路径是 C:\Program Files (x86)\nu 而不是 C:\Program Files\nu;
+- [x] 为所有用户安装的时候默认安装路径是 C:\Program Files (x86)\nu 而不是 C:\Program Files\nu;
 - 安装 Scope 选择切换到为所有用户安装时默认选中的路径是 C:\Program Files (x86)\nu 而不是 C:\Program Files\nu;
 
 ## REF
