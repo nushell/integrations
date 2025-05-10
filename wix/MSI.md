@@ -14,11 +14,14 @@
    - 用户范围安装： `winget install Nushell.Nushell --scope user`
    - 机器范围安装： `winget install Nushell.Nushell --scope machine` （需要管理员权限）
 
-   # For per-user installation
+   # For Per-User Installation
    `msiexec /i bin\x64\Release\nu-x64.msi MSIINSTALLPERUSER=1`
 
-   # For per-machine installation (requires admin privileges)
+   # For Per-Machine Installation (Requires Admin Privileges)
    `msiexec /i bin\x64\Release\nu-x64.msi ALLUSERS=1`
+
+   # MSI Install with Logs
+   `msiexec /i bin\x64\Release\nu-x64.msi ALLUSERS=1 /l*v log.txt`
 
 ## 特性说明
 
