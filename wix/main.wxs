@@ -49,7 +49,7 @@
     <Property Id="ApplicationFolderName" Value="$(var.ApplicationFolderName)" />
 
     <!-- INSTALLDIR is the logical target directory whose path will be set by the INSTALLDIR property. -->
-    <Directory Id="INSTALLDIR" Name="$(var.ApplicationFolderName)"> <!-- Default name, path will be set by INSTALLDIR property -->
+    <Directory Id="INSTALLDIR" Name="$(var.ApplicationFolderName)">
       <!-- LOGICAL_BINDIR's path will be set by the LOGICAL_BINDIR property -->
       <Directory Id="LOGICAL_BINDIR" Name="bin_placeholder" />
     </Directory>
@@ -129,7 +129,7 @@
       </Directory>
     </StandardDirectory>
 
-    <ComponentGroup Id="NushellBinaries" Directory="LOGICAL_BINDIR"> <!-- Changed to LOGICAL_BINDIR -->
+    <ComponentGroup Id="NushellBinaries" Directory="LOGICAL_BINDIR">
       <Component Id="Nu_Main" Guid="*">
         <File Id="nu.exe" Source="$(var.SourceDir)\nu.exe" KeyPath="yes" />
       </Component>
@@ -151,7 +151,7 @@
     </ComponentGroup>
 
     <!-- License and Icon in main installation directory -->
-    <ComponentGroup Id="NushellResources" Directory="INSTALLDIR"> <!-- Changed to INSTALLDIR (logical) -->
+    <ComponentGroup Id="NushellResources" Directory="INSTALLDIR">
       <Component Id="Nu_Icon" Guid="*">
         <File Id="nu.ico" Source="$(var.ProjectDir)\nu.ico" KeyPath="yes" />
       </Component>
@@ -198,6 +198,7 @@
       <Launch Condition="ProcessorArchitecture = 'ARM64'" Message="This installation package is only supported on ARM64 Windows." />
     <?endif?>
 
+    <!-- If installing per-user (MSIINSTALLPERUSER=1), this sets INSTALLDIR and BINDIR to point to user-specific paths -->
     <SetProperty Id="INSTALLDIR"
                  Action="SetINSTALLDIR_User"
                  Value="[INSTALLDIR_USER]"
@@ -211,7 +212,7 @@
                  Condition="MSIINSTALLPERUSER=1"
                  Sequence="both" />
 
-    <!-- If Installed with ALLUSERS=1 set the default Install dir to ProgramFiles64Folder -->
+    <!-- If installing per-machine (ALLUSERS=1 AND NOT MSIINSTALLPERUSER=1), this sets INSTALLDIR and BINDIR to point to machine-wide (Program Files) paths -->
     <SetProperty Id="INSTALLDIR"
                  Action="SetINSTALLDIR_Machine"
                  Value="[APPLICATIONFOLDER]"
@@ -228,13 +229,14 @@
     <!-- Set the LOGICAL_BINDIR property to the resolved BINDIR path -->
     <SetProperty Id="LOGICAL_BINDIR" Value="[BINDIR]" After="AppSearch" Sequence="both" />
 
-    <!-- Custom Action for Windows Terminal Profile -->
+    <!-- Property that defines the command executed by the Windows Terminal Profile custom action -->
     <SetProperty Id="ReplacePathsInWindowsTerminalProfile"
                  Sequence="execute"
                  Value="&quot;[#nu.exe]&quot; -c &quot;let doc = (open `[#WindowsTerminalProfileFile]` | update profiles.commandline `[#nu.exe]` | update profiles.icon `[#nu.ico]`); $doc | save -f `[#WindowsTerminalProfileFile]`&quot;"
                  After="CostFinalize"
                  Condition="MSIINSTALLPERUSER=1" />
 
+    <!-- Defines the custom action that updates paths in the Windows Terminal profile JSON file -->
     <CustomAction Id="ReplacePathsInWindowsTerminalProfile"
                   Return="check"
                   Impersonate="yes"
