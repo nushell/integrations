@@ -9,15 +9,14 @@
     <SuppressValidation>true</SuppressValidation>
     <SuppressIces>ICE80</SuppressIces>
   </PropertyGroup>
-
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
     <InstallerPlatform>x64</InstallerPlatform>
-    <DefineConstants>$(DefineConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);Win64=yes</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Platform)' == 'arm64' ">
     <InstallerPlatform>arm64</InstallerPlatform>
-    <DefineConstants>$(DefineConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);Win64=yes</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

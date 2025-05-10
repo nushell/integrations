@@ -8,13 +8,15 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui"
      xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
-
   <?define ProductName = "Nushell" ?>
   <?define ApplicationFolderName = "nu" ?>
+  <?ifndef env.NU_RELEASE_VERSION ?>
+  <?define ProductVersion = "0.0.0" ?>
+  <?else?>
   <?define ProductVersion = "$(env.NU_RELEASE_VERSION)" ?>
+  <?endif?>
   <?define Manufacturer = "The Nushell Project Developers" ?>
   <?define UpgradeCode = "82D756D2-19FA-4F09-B10F-64942E89F364" ?>
-
   <!-- https://docs.firegiant.com/wix/schema/wxs/package/ -->
   <Package
     Compressed="yes"
@@ -37,9 +39,31 @@
     <!-- Allow install for Current User Or Machine -->
     <Property Id="WixUISupportPerUser" Value="1" />
     <Property Id="WixUISupportPerMachine" Value="1" />
+
     <!-- Install for PerUser by default -->
     <!-- If set to WixPerMachineFolder will install for PerMachine by default -->
     <Property Id="WixAppFolder" Value="WixLocalAppDataFolder" />
+
+    <!-- Setup WixPerMachineFolder with a DEFAULT value -->
+    <?if $(sys.BUILDARCH) = x64 OR $(sys.BUILDARCH) = arm64 ?>
+    <Property Id="WixPerMachineFolder" Value="C:\Program Files\$(var.ApplicationFolderName)" />
+    <?else?>
+    <Property Id="WixPerMachineFolder" Value="C:\Program Files (x86)\$(var.ApplicationFolderName)" />
+    <?endif?>
+
+    <!-- Set proper folder paths dynamically based on architecture -->
+    <?if $(sys.BUILDARCH) = x64 OR $(sys.BUILDARCH) = arm64 ?>
+    <!-- Force 64-bit program files directory -->
+    <SetProperty Id="WixPerMachineFolder"
+                Value="[ProgramFiles64Folder]$(var.ApplicationFolderName)"
+                After="LaunchConditions"
+                Sequence="both" />
+    <?else?>
+    <SetProperty Id="WixPerMachineFolder"
+                Value="[ProgramFilesFolder]$(var.ApplicationFolderName)"
+                After="LaunchConditions"
+                Sequence="both" />
+    <?endif?>
 
     <!-- Enable UAC prompt when installing for all users -->
     <!-- <Property Id="MSIUSEREALADMINDETECTION" Value="1" /> -->
@@ -52,9 +76,8 @@
     <Directory Id="INSTALLDIR" Name="$(var.ApplicationFolderName)">
       <!-- LOGICAL_BINDIR's path will be set by the LOGICAL_BINDIR property -->
       <Directory Id="LOGICAL_BINDIR" Name="bin_placeholder" />
-    </Directory>
-
-    <!-- Per Machine Install - these are the definitions of the physical locations -->
+    </Directory>    <!-- Per Machine Install - these are the definitions of the physical locations -->
+    <?if $(sys.BUILDARCH) = x64 OR $(sys.BUILDARCH) = arm64 ?>
     <StandardDirectory Id="ProgramFiles64Folder">
       <Directory Id="APPLICATIONFOLDER" Name="$(var.ApplicationFolderName)">
         <Directory Id="BINDIR" Name="bin">
@@ -77,6 +100,30 @@
         </Directory>
       </Directory>
     </StandardDirectory>
+    <?else?>
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="APPLICATIONFOLDER" Name="$(var.ApplicationFolderName)">
+        <Directory Id="BINDIR" Name="bin">
+          <!-- Per-machine PATH component for x86 -->
+          <Component Id="EnvironmentPathMachine" Guid="{47781325-8A2B-4F8D-A058-9A2C4136E25F}" Condition="ALLUSERS=1 AND NOT MSIINSTALLPERUSER=1">
+            <Environment Id="PATHMachine"
+                         Name="PATH"
+                         Value="[BINDIR]"
+                         Permanent="no"
+                         Part="last"
+                         Action="set"
+                         System="yes" />
+            <RegistryValue Root="HKLM"
+                           Key="Software\nu"
+                           Name="installed"
+                           Type="integer"
+                           Value="1"
+                           KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+    <?endif?>
 
     <!-- Install for Current User - these are the definitions of the physical locations -->
     <StandardDirectory Id="LocalAppDataFolder">
@@ -127,9 +174,8 @@
           </Directory>
         </Directory>
       </Directory>
-    </StandardDirectory>
-
-    <ComponentGroup Id="NushellBinaries" Directory="LOGICAL_BINDIR">
+    </StandardDirectory>    <ComponentGroup Id="NushellBinaries" Directory="LOGICAL_BINDIR">
+      <?if $(sys.BUILDARCH) = x64 OR $(sys.BUILDARCH) = arm64 ?>
       <Component Id="Nu_Main" Guid="*">
         <File Id="nu.exe" Source="$(var.SourceDir)\nu.exe" KeyPath="yes" />
       </Component>
@@ -148,10 +194,29 @@
       <Component Id="Nu_Plugin_Formats" Guid="*">
         <File Id="nu_plugin_formats.exe" Source="$(var.SourceDir)\nu_plugin_formats.exe" KeyPath="yes" />
       </Component>
-    </ComponentGroup>
-
-    <!-- License and Icon in main installation directory -->
+      <?else?>
+      <Component Id="Nu_Main" Guid="*">
+        <File Id="nu.exe" Source="$(var.SourceDir)\nu.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="Nu_Plugin_Inc" Guid="*">
+        <File Id="nu_plugin_inc.exe" Source="$(var.SourceDir)\nu_plugin_inc.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="Nu_Plugin_Gstat" Guid="*">
+        <File Id="nu_plugin_gstat.exe" Source="$(var.SourceDir)\nu_plugin_gstat.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="Nu_Plugin_Query" Guid="*">
+        <File Id="nu_plugin_query.exe" Source="$(var.SourceDir)\nu_plugin_query.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="Nu_Plugin_Polars" Guid="*">
+        <File Id="nu_plugin_polars.exe" Source="$(var.SourceDir)\nu_plugin_polars.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="Nu_Plugin_Formats" Guid="*">
+        <File Id="nu_plugin_formats.exe" Source="$(var.SourceDir)\nu_plugin_formats.exe" KeyPath="yes" />
+      </Component>
+      <?endif?>
+    </ComponentGroup>    <!-- License and Icon in main installation directory -->
     <ComponentGroup Id="NushellResources" Directory="INSTALLDIR">
+      <?if $(sys.BUILDARCH) = x64 OR $(sys.BUILDARCH) = arm64 ?>
       <Component Id="Nu_Icon" Guid="*">
         <File Id="nu.ico" Source="$(var.ProjectDir)\nu.ico" KeyPath="yes" />
       </Component>
@@ -161,6 +226,17 @@
       <Component Id="Nu_License" Guid="*">
         <File Id="License.rtf" Source="$(var.ProjectDir)\License.rtf" KeyPath="yes" />
       </Component>
+      <?else?>
+      <Component Id="Nu_Icon" Guid="*">
+        <File Id="nu.ico" Source="$(var.ProjectDir)\nu.ico" KeyPath="yes" />
+      </Component>
+      <Component Id="Nu_Readme" Guid="*">
+        <File Id="README.txt" Source="$(var.ProjectDir)\README.txt" KeyPath="yes" />
+      </Component>
+      <Component Id="Nu_License" Guid="*">
+        <File Id="License.rtf" Source="$(var.ProjectDir)\License.rtf" KeyPath="yes" />
+      </Component>
+      <?endif?>
     </ComponentGroup>
 
     <!-- Main feature set -->
@@ -210,15 +286,23 @@
                  Value="[BINDIR_USER]"
                  After="AppSearch"
                  Condition="MSIINSTALLPERUSER=1"
-                 Sequence="both" />
-
-    <!-- If installing per-machine (ALLUSERS=1 AND NOT MSIINSTALLPERUSER=1), this sets INSTALLDIR and BINDIR to point to machine-wide (Program Files) paths -->
+                 Sequence="both" />    <!-- If installing per-machine (ALLUSERS=1 AND NOT MSIINSTALLPERUSER=1), this sets INSTALLDIR and BINDIR to point to machine-wide (Program Files) paths -->
     <SetProperty Id="INSTALLDIR"
                  Action="SetINSTALLDIR_Machine"
                  Value="[APPLICATIONFOLDER]"
                  After="AppSearch"
                  Condition="ALLUSERS=1 AND NOT MSIINSTALLPERUSER=1"
                  Sequence="both" />
+
+    <!-- Override APPLICATIONFOLDER for 64-bit installations -->
+    <?if $(sys.BUILDARCH) = x64 OR $(sys.BUILDARCH) = arm64 ?>
+    <SetProperty Id="APPLICATIONFOLDER"
+                 Value="[ProgramFiles64Folder]$(var.ApplicationFolderName)"
+                 After="LaunchConditions"
+                 Condition="ALLUSERS=1 AND NOT MSIINSTALLPERUSER=1"
+                 Sequence="both" />
+    <?endif?>
+
     <SetProperty Id="BINDIR"
                  Action="SetBINDIR_Machine"
                  Value="[BINDIR]"
