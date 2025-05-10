@@ -9,6 +9,7 @@
     <SuppressValidation>true</SuppressValidation>
     <SuppressIces>ICE80</SuppressIces>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
     <InstallerPlatform>x64</InstallerPlatform>
     <DefineConstants>$(DefineConstants);Win64=yes</DefineConstants>
