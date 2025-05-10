@@ -62,7 +62,7 @@
 ## REF
 
 - https://docs.firegiant.com/quick-start/
-
-I believe the issue will be resolved in the pull request at https://github.com/nushell/nushell/pull/15690. I've tested it using the command `msiexec /i nu-0.104.1-aarch64-pc-windows-msvc.msi MSIINSTALLPERUSER=1`, and it's working as expected.
-
-Would you mind downloading the MSI from the **latest nightly build**: https://github.com/nushell/nightly/releases/tag/v0.104.1 and giving it a try? If you encounter any unexpected behavior, please let me know.
+- https://docs.firegiant.com/wix/schema/wxs/package/
+- https://learn.microsoft.com/en-ca/windows/win32/msi/formatted
+- https://learn.microsoft.com/en-us/windows/win32/msi/single-package-authoring
+- https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/msiexec
