@@ -11,3 +11,4 @@ release/
 wix/nu/
 wix/obj/
 signing-key.pub
+prompts.md
