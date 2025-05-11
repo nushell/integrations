@@ -35,6 +35,8 @@
 
 - 为当前用户安装 Nushell：
   - 检查默认安装路径是否正确
+  - 检查静默安装: `msiexec /i $pkg MSIINSTALLPERUSER=1 /quiet /qn` 是否正常
+  - 检查静默安装: `winget install --manifest manifests\n\Nushell\Nushell\0.104.1 --scope user` 是否正常
   - 安装过程中是否不会出现 UAC prompt
   - 检查安装完成后环境变量是否正确添加
   - 检查注册表变量是否正确设置
@@ -46,6 +48,7 @@
 - 为所有用户安装 Nushell
   - 如果是普通用户安装过程中是否会出现 UAC prompt
   - 检查默认安装路径是否正确
+  - 检查静默安装: `winget install --manifest manifests\n\Nushell\Nushell\0.104.1 --scope machine` 是否正常
   - 检查是否允许用户选择自定义安装路径
   - 选择自定义安装路径是否能成功安装
   - 如果是升级安装是否保持原来的安装路径
@@ -59,6 +62,7 @@
 
 - 卸载的时候环境变量没有被清理掉;
 - 支持通过 INSTALLDIR 属性指定安装路径
+- [x] `msiexec /i $pkg MSIINSTALLPERUSER=1 /quiet /qn` 静默安装路径异常
 - [x] 为所有用户安装的时候没有正确安装 WindowsTerminalProfileFeature
 - [x] 为所有用户安装的时候默认安装路径是 C:\Program Files (x86)\nu 而不是 C:\Program Files\nu;
 - [x] 安装 Scope 选择切换到为所有用户安装时默认选中的路径是 C:\Program Files (x86)\nu 而不是 C:\Program Files\nu;
