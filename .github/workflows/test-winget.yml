@@ -47,8 +47,8 @@ jobs:
       - name: Upgrade Winget
         run: |
           winget --version
-          winget upgrade winget --accept-package-agreements --accept-source-agreements --disable-interactivity
-          winget --version
+          # winget upgrade winget --accept-package-agreements --accept-source-agreements --disable-interactivity
+          # winget --version
           # winget install Nushell.Nushell --disable-interactivity --accept-source-agreements
 
       - name: Setup Nu
