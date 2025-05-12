@@ -28,11 +28,7 @@ permissions:
 
 jobs:
   run-tests:
-    name: Run MSI Tests
-
-    permissions:
-      checks: write
-      pull-requests: write
+    name: MSI Install Tests
 
     strategy:
       fail-fast: false

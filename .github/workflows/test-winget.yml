@@ -28,11 +28,7 @@ permissions:
 
 jobs:
   run-tests:
-    name: Run Winget Tests
-
-    permissions:
-      checks: write
-      pull-requests: write
+    name: Winget Install Tests
 
     strategy:
       fail-fast: false
@@ -60,7 +56,7 @@ jobs:
         with:
           version: 'nightly'
 
-      - name: Test MSI Install
+      - name: Test Winget Install
         shell: nu {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
