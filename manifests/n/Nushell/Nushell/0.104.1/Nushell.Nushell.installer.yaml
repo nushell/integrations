@@ -1,0 +1,37 @@
+# Created with WinGet Releaser using komac v2.11.2
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.9.0.schema.json
+
+PackageIdentifier: Nushell.Nushell
+PackageVersion: 0.104.1
+InstallerLocale: en-US
+InstallerType: wix
+Scope: user
+InstallModes:
+- interactive
+- silent
+- silentWithProgress
+UpgradeBehavior: install
+Commands:
+- nu
+ReleaseDate: 2025-05-11
+InstallationMetadata:
+  DefaultInstallLocation: nu
+Installers:
+- Architecture: x64
+  InstallerUrl: https://github.com/nushell/nightly/releases/download/v0.104.1/nu-0.104.1-x86_64-pc-windows-msvc.msi
+  InstallerSha256: 5FAC52A2590F118EF96447B256AD53229BDF4CC03E3B0094F51A2E53D38A260B
+  ProductCode: '{2DDEA6A2-DFD6-4DD7-8A4F-42F289D8EE78}'
+  AppsAndFeaturesEntries:
+  - DisplayName: Nushell
+    ProductCode: '{2DDEA6A2-DFD6-4DD7-8A4F-42F289D8EE78}'
+    UpgradeCode: '{82D756D2-19FA-4F09-B10F-64942E89F364}'
+- Architecture: arm64
+  InstallerUrl: https://github.com/nushell/nightly/releases/download/v0.104.1/nu-0.104.1-aarch64-pc-windows-msvc.msi
+  InstallerSha256: DE389519623B4A3A190579642CE1412F76079698E5F92F41AF534C8DBD6D3583
+  ProductCode: '{7B0C8A48-CE94-4A3C-B5AB-5A011764C588}'
+  AppsAndFeaturesEntries:
+  - DisplayName: Nushell
+    ProductCode: '{7B0C8A48-CE94-4A3C-B5AB-5A011764C588}'
+    UpgradeCode: '{82D756D2-19FA-4F09-B10F-64942E89F364}'
+ManifestType: installer
+ManifestVersion: 1.9.0
