@@ -1,0 +1,68 @@
+# Description: This workflow runs tests for hustcer/deepseek-review.
+# REF:
+#   - https://github.com/vyadh/nutest/blob/main/.github/workflows/tests.yaml
+#   - https://github.com/fdncred/winget-pkgs/blob/master/doc/manifest/schema/1.10.0/installer.md
+#   - https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
+
+name: Run MSI Install Tests
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/msi-test
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  schedule:
+    - cron: '0 0 * * *'   # Run every morning at 0am UTC
+
+permissions:
+  contents: read
+
+jobs:
+  run-tests:
+    name: MSI Install Tests
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2019, windows-latest, windows-2025, windows-11-arm]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout Nutest Repo
+        uses: actions/checkout@v4
+        with:
+          ref: v1.1.0
+          path: nutest
+          repository: vyadh/nutest
+          sparse-checkout: nutest/
+
+      - name: Setup Nu
+        uses: hustcer/setup-nu@v3
+        with:
+          version: 'nightly'
+
+      - name: Test MSI Install
+        shell: nu {0}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          use ${{ github.workspace }}/nutest/nutest
+          (
+            nutest run-tests
+              --fail
+              --display terminal
+              --report { type: junit, path: test-report.xml }
+              --returns summary | to json | save --force test-summary.json
+          )

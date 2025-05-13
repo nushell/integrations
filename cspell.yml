@@ -9,6 +9,7 @@ words:
 - Pkgs
 - esep
 - dpkg
+- hkcu
 - maint
 - rsort
 - cnqoj
@@ -24,20 +25,26 @@ words:
 - mipsle
 - GOARCH
 - pacman
+- vyadh
+- nutest
+- winget
 - gpgkey
 - debsign
+- msiexec
 - dearmor
 - libexec
 - nushell
 - Gemfury
 - hustcer
 - rsbuild
+- ALLUSERS
 - modeline
 - gpgcheck
 - justfile
 - lefthook
 - linewise
 - deepseek
+- Cyberboss
 - softprops
 - noconfirm
 - modelines
@@ -50,4 +57,5 @@ words:
 - goreleaser
 - rockylinux
 - Infinigence
+- MSIINSTALLPERUSER
 ignorePaths:
