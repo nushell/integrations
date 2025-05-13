@@ -41,8 +41,14 @@
     <!-- If set to WixPerMachineFolder will install for PerMachine by default -->
     <Property Id="WixAppFolder" Value="WixLocalAppDataFolder" />
 
-    <!-- Support for winget install ` ——scope machine` -->
+    <!--
+      Support for winget install `——scope machine`:
+        Winget doesn't directly pass ALLUSERS=1 to the MSI installer when using
+        ——scope machine. Instead, it passes a property called INSTALLSCOPEMACHINE=1
+        This converts the winget parameter to the standard MSI parameter.
+    -->
     <SetProperty Id="ALLUSERS" Value="1" After="LaunchConditions" Condition="INSTALLSCOPEMACHINE=1" />
+    <!-- This ensures the per-user flag is turned off when installing for all users. -->
     <SetProperty Id="MSIINSTALLPERUSER" Value="0" After="LaunchConditions" Condition="INSTALLSCOPEMACHINE=1" />
 
     <!-- Workaround Wix Bug: https://github.com/wixtoolset/issues/issues/2165 -->
