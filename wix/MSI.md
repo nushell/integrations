@@ -62,6 +62,7 @@
 
 - 卸载的时候环境变量没有被清理掉;
 - 支持通过 INSTALLDIR 属性指定安装路径
+- `winget install --scope machine` 不支持
 - [x] `msiexec /i $pkg MSIINSTALLPERUSER=1 /quiet /qn` 静默安装路径异常
 - [x] 为所有用户安装的时候没有正确安装 WindowsTerminalProfileFeature
 - [x] 为所有用户安装的时候默认安装路径是 C:\Program Files (x86)\nu 而不是 C:\Program Files\nu;
