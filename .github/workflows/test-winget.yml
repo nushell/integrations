@@ -27,8 +27,8 @@ permissions:
   contents: read
 
 jobs:
-  run-tests:
-    name: Winget Install Tests
+  default-scope:
+    name: Install with Default Scope
 
     strategy:
       fail-fast: false
@@ -56,9 +56,38 @@ jobs:
         with:
           version: 'nightly'
 
-      - name: Test Winget Install
+      - name: Test Winget Install with Default Scope
         shell: nu {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           nu tests/winget-install.nu
+
+  user-scope:
+    name: Install with User Scope
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, windows-2025]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install winget
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: Cyberboss/install-winget@v1
+
+      - name: Setup Nu
+        uses: hustcer/setup-nu@v3
+        with:
+          version: 'nightly'
+
+      - name: Test Winget Install with User Scope
+        shell: nu {0}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          nu tests/winget-install.nu --scope user
