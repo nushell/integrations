@@ -51,6 +51,14 @@
     <!-- This ensures the per-user flag is turned off when installing for all users. -->
     <SetProperty Id="MSIINSTALLPERUSER" Value="0" After="LaunchConditions" Condition="INSTALLSCOPEMACHINE=1" />
 
+    <!--
+      Support for winget install `——scope user`:
+        Winget may pass INSTALLSCOPEUSER=1. This explicitly sets MSI properties
+        for a per-user installation.
+    -->
+    <SetProperty Id="ALLUSERS" Value="" After="LaunchConditions" Condition="INSTALLSCOPEUSER=1" />
+    <SetProperty Id="MSIINSTALLPERUSER" Value="1" After="LaunchConditions" Condition="INSTALLSCOPEUSER=1" />
+
     <!-- Workaround Wix Bug: https://github.com/wixtoolset/issues/issues/2165 -->
     <!-- The suggested folder in the dest folder dialog should be C:\Program Files\nu -->
     <CustomAction Id="Overwrite_WixSetDefaultPerMachineFolder" Property="WixPerMachineFolder"
