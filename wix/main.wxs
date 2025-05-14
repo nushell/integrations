@@ -237,13 +237,13 @@
     <SetProperty Id="INSTALLDIR"
                  Action="SetINSTALLDIR_User"
                  Value="[LocalAppDataFolder]Programs\$(var.ApplicationFolderName)"
-                 After="AppSearch"
+                 After="LaunchConditions"
                  Condition="MSIINSTALLPERUSER=1"
                  Sequence="both" />
     <SetProperty Id="BINDIR"
                  Action="SetBINDIR_User"
                  Value="[LocalAppDataFolder]Programs\$(var.ApplicationFolderName)\bin"
-                 After="AppSearch"
+                 After="LaunchConditions"
                  Condition="MSIINSTALLPERUSER=1"
                  Sequence="both" />
 
@@ -251,7 +251,7 @@
     <SetProperty Id="INSTALLDIR"
                  Action="SetINSTALLDIR_Machine"
                  Value="[APPLICATIONFOLDER]"
-                 After="AppSearch"
+                 After="LaunchConditions"
                  Condition="ALLUSERS=1 AND NOT MSIINSTALLPERUSER=1"
                  Sequence="both" />
 
@@ -267,12 +267,12 @@
     <SetProperty Id="BINDIR"
                  Action="SetBINDIR_Machine"
                  Value="[BINDIR]"
-                 After="AppSearch"
+                 After="LaunchConditions"
                  Condition="ALLUSERS=1 AND NOT MSIINSTALLPERUSER=1"
                  Sequence="both" />
 
     <!-- Set the LOGICAL_BINDIR property to the resolved BINDIR path -->
-    <SetProperty Id="LOGICAL_BINDIR" Value="[BINDIR]" After="AppSearch" Sequence="both" />
+    <SetProperty Id="LOGICAL_BINDIR" Value="[BINDIR]" After="LaunchConditions" Sequence="both" />
 
     <!-- Property that defines the command executed by the Windows Terminal Profile custom action -->
     <!-- for Value, see https://learn.microsoft.com/en-ca/windows/win32/msi/formatted -->
