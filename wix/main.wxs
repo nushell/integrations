@@ -280,7 +280,7 @@
                  Sequence="execute"
                  After="CostFinalize"
                  Value="&quot;[#nu.exe]&quot; -c &quot;let doc = (open `[#WindowsTerminalProfileFile]` | update profiles.commandline `[#nu.exe]` | update profiles.icon `[#nu.ico]`); $doc | save -f `[#WindowsTerminalProfileFile]`&quot;"
-                 Condition="(&amp;WindowsTerminalProfileFeature=3) OR ((!WindowsTerminalProfileFeature=3) AND (REINSTALL&lt;&gt;&quot;&quot;))" />
+                 Condition="&amp;WindowsTerminalProfileFeature=3" />
 
     <!-- Defines the custom action that updates paths in the Windows Terminal profile JSON file -->
     <CustomAction Id="ReplacePathsInWindowsTerminalProfile"
@@ -292,7 +292,7 @@
 
     <InstallExecuteSequence>
       <Custom Action="ReplacePathsInWindowsTerminalProfile" Before="InstallFinalize"
-              Condition="((&amp;WindowsTerminalProfileFeature=3) OR ((!WindowsTerminalProfileFeature=3) AND (REINSTALL&lt;&gt;&quot;&quot;)))" />
+              Condition="&amp;WindowsTerminalProfileFeature=3" />
     </InstallExecuteSequence>
   </Package>
 </Wix>
