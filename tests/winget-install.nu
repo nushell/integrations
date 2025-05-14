@@ -18,6 +18,7 @@ def main [--scope: string] {
   let args = [--accept-source-agreements --accept-package-agreements --ignore-security-hash --silent]
   let scope_arg = if $scope in [user, machine] { [--scope $scope] } else { [] }
   winget settings --enable LocalManifestFiles
+  winget settings --enable InstallerHashOverride
   winget install --manifest manifests\n\Nushell\Nushell\0.104.1 ...$args ...$scope_arg
   let environment = registry query --hkcu environment
       | where name == Path | get 0.value
