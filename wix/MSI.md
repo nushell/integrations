@@ -31,6 +31,18 @@
 4. 多架构支持 ：支持 `x86_64` 和 `ARM64` 架构
 5. 系统兼容性 ：兼容 Windows 7/10/11
 
+## User-Facing Changes
+
+- Nushell should be possible to be installed via winget with both user and machine scope and The default should be user scope
+  - User scope install by winget: `winget install Nushell.Nushell`
+  - User scope install by msiexec: `msiexec /i nu-0.104.1-x86_64-pc-windows-msvc.msi /quiet /qn`
+  - Machine scope install by winget: `winget install Nushell.Nushell --override 'ALLUSERS=1'`
+  - Machine scope install by msiexec: `msiexec /i nu-0.104.1-x86_64-pc-windows-msvc.msi ALLUSERS=1`
+  - Note that `--scope` flag for `winget install` does not work use `--override` instead
+  - Default user scope install dir: `$'($nu.home-path)\AppData\Local\Programs\nu\'`
+  - Default machine scope install dir: `C:\Program Files\nu\`
+- When a standard user runs the installer and selects "Install for everyone" (per-machine installation), Windows will automatically trigger a UAC prompt, the user can enter admin credentials and the installation will proceed with elevated privileges
+
 ## Test Case
 
 - 为当前用户安装 Nushell：
