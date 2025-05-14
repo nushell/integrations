@@ -29,39 +29,39 @@ export def check-user-install [install_dir = $USER_INSTALL_DIR: string] {
   print $'(char nl)(ansi g)Path environment setup sucessfully...(ansi reset)'
   assert equal (registry query --hkcu Software\nu | where name == installed | get 0.value) 1
   assert equal (registry query --hkcu Software\nu | where name == WindowsTerminalProfile | get 0.value) 1
-  check-common-install $USER_INSTALL_DIR
+  check-common-install $install_dir
 }
 
 # Run this command locally after uninstalling nu
-export def check-uninstall [] {
+export def check-uninstall [install_dir = $MACHINE_INSTALL_DIR: string] {
 
   let environment = registry query --hkcu environment
       | where name == Path | get 0.value
   print $"(char nl)Path Environment after uninstall: \n"
   print ($environment | split row ';')
+  assert equal ($environment | str contains $install_dir) false
   assert equal ($environment | str contains $USER_INSTALL_DIR) false
-  assert equal ($environment | str contains $MACHINE_INSTALL_DIR) false
   print $'(char nl)(ansi g)Path environment uninstall sucessfully...(ansi reset)'
   assert equal ($PROFILE | path exists) false
   print $'(ansi g)Windows Terminal Profile uninstall sucessfully...(ansi reset)'
+  assert equal ($install_dir | path exists) false
   assert equal ($USER_INSTALL_DIR | path exists) false
-  assert equal ($MACHINE_INSTALL_DIR | path exists) false
   print $'(ansi g)Nu binaries uninstalled sucessfully...(ansi reset)'
   assert equal (try { registry query --hkcu Software\nu } catch {false}) false
 }
 
-export def check-local-machine-install [] {
+export def check-local-machine-install [install_dir = $MACHINE_INSTALL_DIR: string] {
 
   const ENV_REG_KEY = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment'
   let environment = registry query --hklm $ENV_REG_KEY
       | where name == Path | get 0.value
   print $"(char nl)Path Environment after install: \n"
   print ($environment | split row ';')
-  assert equal ($environment | str contains $MACHINE_INSTALL_DIR) true
+  assert equal ($environment | str contains $install_dir) true
   print $'(char nl)(ansi g)Path environment setup sucessfully...(ansi reset)'
   assert equal (registry query --hklm Software\nu | where name == installed | get 0.value) 1
   assert equal (registry query --hkcu Software\nu | where name == WindowsTerminalProfile | get 0.value) 1
-  check-common-install $MACHINE_INSTALL_DIR
+  check-common-install $install_dir
 }
 
 # Run this command locally or in GitHub runners after installing nu
