@@ -32,6 +32,7 @@ def 'msi-install：MSI should install successfully for per-user' [] {
   let profile = $'($nu.home-path)\AppData\Local\Microsoft\Windows Terminal\Fragments\nu\nu.json'
   const BINS = [
     nu.exe,
+    less.exe,
     nu_plugin_inc.exe,
     nu_plugin_gstat.exe,
     nu_plugin_query.exe,
@@ -49,10 +50,16 @@ def 'msi-install：MSI should install successfully for per-user' [] {
   print $"Path Environment: \n($environment)"
   let contents = ls -s $install_dir
   let bins = ls -s $'($install_dir)\bin'
-  assert greater ($bins | length) 5
+  assert greater ($bins | length) 7
   assert greater ($contents | length) 3
   assert equal ($profile | path exists) true
+  print $'(ansi g)Windows Terminal Profile setup sucessfully...(ansi reset)'
   assert equal ($environment | str contains $install_dir) true
+  print $'(ansi g)Path environment setup sucessfully...(ansi reset)'
   assert equal ($BINS | all {|it| $it in ($bins | get name) }) true
+  print $'(ansi g)Nu binaries installed sucessfully...(ansi reset)'
   assert equal ([License.rtf README.txt nu.ico bin] | all {|it| $it in ($contents | get name) }) true
+  assert equal (registry query --hkcu Software\nu | where name == installed | get 0.value) 1
+  assert equal (registry query --hkcu Software\nu | where name == WindowsTerminalProfile | get 0.value) 1
+  print (^$'($install_dir)\bin\nu.exe' -c 'version')
 }
