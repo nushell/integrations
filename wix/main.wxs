@@ -84,9 +84,14 @@
         <Directory Id="BINDIR" Name="bin">
           <!-- Per-machine PATH component -->
           <Component Id="EnvironmentPathMachine" Guid="{47781325-8A2B-4F8D-A058-9A2C4136E25F}" Condition="ALLUSERS=1 AND NOT MSIINSTALLPERUSER=1">
+            <!--
+              The asterisk (*) ensures that the exact path string resolved at install time is used for PATH modification.
+              This is critical for reliably removing the path from the PATH environment variable during uninstallation,
+              especially when the user has chosen a custom installation directory.
+            -->
             <Environment Id="PATHMachine"
                          Name="PATH"
-                         Value="[BINDIR]"
+                         Value="*[BINDIR]"
                          Permanent="no"
                          Part="last"
                          Action="set"
@@ -111,7 +116,7 @@
             <Component Id="EnvironmentPathUser" Guid="{D6A3A7B2-1F3A-4B6A-8A3B-3A7B2D6A3A7B}" Condition="MSIINSTALLPERUSER=1">
               <Environment Id="PATHUser"
                            Name="PATH"
-                           Value="[BINDIR]"
+                           Value="*[BINDIR_USER]"
                            Permanent="no"
                            Part="last"
                            Action="set"
