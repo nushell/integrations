@@ -19,19 +19,19 @@ InstallationMetadata:
 Installers:
 - Architecture: x64
   InstallerUrl: https://github.com/nushell/nightly/releases/download/v0.104.1/nu-0.104.1-x86_64-pc-windows-msvc.msi
-  InstallerSha256: 0A88012C109688116F9DC4E2FA172778EF590C8F05698758E9B88C4D9606618B
-  ProductCode: '{E296D932-22B5-4B9F-918D-EB7D54EEB255}'
+  InstallerSha256: EF8FDC307EF9BFDC1D6AC50E2C5EF5CF4D232B0D55CC59F27CD73B753091149A
+  ProductCode: '{E2BC2C5B-BA10-478F-8554-FAE782BA3CBA}'
   AppsAndFeaturesEntries:
   - DisplayName: Nushell
-    ProductCode: '{E296D932-22B5-4B9F-918D-EB7D54EEB255}'
+    ProductCode: '{E2BC2C5B-BA10-478F-8554-FAE782BA3CBA}'
     UpgradeCode: '{82D756D2-19FA-4F09-B10F-64942E89F364}'
 - Architecture: arm64
   InstallerUrl: https://github.com/nushell/nightly/releases/download/v0.104.1/nu-0.104.1-aarch64-pc-windows-msvc.msi
-  InstallerSha256: 9CDDDF2D5C50BDF38F04878F77B3397B3F7171A6F69A0C9B3FA0DF69DC8BB276
-  ProductCode: '{D3B3EC28-2761-48A8-A2A3-0B0669BE6612}'
+  InstallerSha256: 95A9C9BCAB8FEC7E763F3C42380150598C9DB1511746DEF81187D17EDBD4C71B
+  ProductCode: '{22E058B2-6A33-43F2-8D25-203711F9BF50}'
   AppsAndFeaturesEntries:
   - DisplayName: Nushell
-    ProductCode: '{D3B3EC28-2761-48A8-A2A3-0B0669BE6612}'
+    ProductCode: '{22E058B2-6A33-43F2-8D25-203711F9BF50}'
     UpgradeCode: '{82D756D2-19FA-4F09-B10F-64942E89F364}'
 ManifestType: installer
 ManifestVersion: 1.9.0
