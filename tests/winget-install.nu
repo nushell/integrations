@@ -1,5 +1,8 @@
 
+use std/assert
 use common.nu [check-user-install]
+
+const VERSION = '0.104.1'
 
 def main [--scope: string] {
 
@@ -10,6 +13,14 @@ def main [--scope: string] {
   let scope_arg = if $scope in [user, machine] { [--scope $scope] } else { [] }
   winget settings --enable LocalManifestFiles
   winget settings --enable InstallerHashOverride
-  winget install --manifest manifests\n\Nushell\Nushell\0.104.1 ...$args ...$scope_arg
+  winget install --manifest manifests\n\Nushell\Nushell\($VERSION) ...$args ...$scope_arg
   check-user-install $install_dir
+  (msi-install：Should install the expected version)
+}
+
+def 'msi-install：Should install the expected version' [] {
+  let install_dir = $'($nu.home-path)\AppData\Local\Programs\nu'
+  let version = ^$'($install_dir)\bin\nu.exe' --version | str trim
+  assert equal ($VERSION | str contains $version) true
+  print $'(ansi g)Installed Nu of the specified version: ($version)(ansi reset)'
 }
