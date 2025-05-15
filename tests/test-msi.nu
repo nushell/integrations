@@ -1,7 +1,7 @@
 
 use std/assert
 use std/testing *
-use common.nu [check-user-install]
+use common.nu [check-user-install, check-version-match]
 
 const RELEASE_TAG = 'v0.104.1'
 
@@ -38,4 +38,5 @@ def 'msi-install：MSI should install successfully for per-user' [] {
   msiexec /i $pkg MSIINSTALLPERUSER=1 /quiet /qn /L*V install.txt
   # print (open -r install.txt)
   check-user-install $install_dir
+  check-version-match $RELEASE_TAG $install_dir
 }

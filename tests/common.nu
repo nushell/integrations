@@ -26,7 +26,7 @@ export def check-user-install [install_dir = $USER_INSTALL_DIR: string] {
   print $"(char nl)Path Environment after install: \n"
   print ($environment | split row ';')
   assert equal ($environment | str contains $install_dir) true
-  print $'(char nl)(ansi g)Path environment setup sucessfully...(ansi reset)'
+  print $'(char nl)(ansi g)Path environment setup successfully...(ansi reset)'
   assert equal (registry query --hkcu Software\nu | where name == installed | get 0.value) 1
   assert equal (registry query --hkcu Software\nu | where name == WindowsTerminalProfile | get 0.value) 1
   check-common-install $install_dir
@@ -41,12 +41,12 @@ export def check-uninstall [install_dir = $MACHINE_INSTALL_DIR: string] {
   print ($environment | split row ';')
   assert equal ($environment | str contains $install_dir) false
   assert equal ($environment | str contains $USER_INSTALL_DIR) false
-  print $'(char nl)(ansi g)Path environment uninstall sucessfully...(ansi reset)'
+  print $'(char nl)(ansi g)Path environment uninstall successfully...(ansi reset)'
   assert equal ($PROFILE | path exists) false
-  print $'(ansi g)Windows Terminal Profile uninstall sucessfully...(ansi reset)'
+  print $'(ansi g)Windows Terminal Profile uninstall successfully...(ansi reset)'
   assert equal ($install_dir | path exists) false
   assert equal ($USER_INSTALL_DIR | path exists) false
-  print $'(ansi g)Nu binaries uninstalled sucessfully...(ansi reset)'
+  print $'(ansi g)Nu binaries uninstalled successfully...(ansi reset)'
   assert equal (try { registry query --hkcu Software\nu } catch {false}) false
 }
 
@@ -58,7 +58,7 @@ export def check-local-machine-install [install_dir = $MACHINE_INSTALL_DIR: stri
   print $"(char nl)Path Environment after install: \n"
   print ($environment | split row ';')
   assert equal ($environment | str contains $install_dir) true
-  print $'(char nl)(ansi g)Path environment setup sucessfully...(ansi reset)'
+  print $'(char nl)(ansi g)Path environment setup successfully...(ansi reset)'
   assert equal (registry query --hklm Software\nu | where name == installed | get 0.value) 1
   assert equal (registry query --hkcu Software\nu | where name == WindowsTerminalProfile | get 0.value) 1
   check-common-install $install_dir
@@ -67,14 +67,24 @@ export def check-local-machine-install [install_dir = $MACHINE_INSTALL_DIR: stri
 # Run this command locally or in GitHub runners after installing nu
 export def check-common-install [install_dir = $USER_INSTALL_DIR: string] {
 
+  let profile = open $PROFILE
   let contents = ls -s $install_dir
   let bins = ls -s $'($install_dir)\bin'
   assert greater ($bins | length) 7
   assert greater ($contents | length) 3
   assert equal ($PROFILE | path exists) true
-  print $'(ansi g)Windows Terminal Profile setup sucessfully...(ansi reset)'
+  assert equal ($profile | get profiles.0.icon | path exists) true
+  assert equal ($profile | get profiles.0.commandline | path exists) true
+  print $'(ansi g)Windows Terminal Profile setup successfully...(ansi reset)'
   assert equal ($BINS | all {|it| $it in ($bins | get name) }) true
-  print $'(ansi g)Nu binaries installed sucessfully...(ansi reset)'
+  print $'(ansi g)Nu binaries installed successfully...(ansi reset)'
   assert equal ($ASSETS | all {|it| $it in ($contents | get name) }) true
   print (^$'($install_dir)\bin\nu.exe' -c 'version')
+}
+
+export def check-version-match [version_expected: string, install_dir = $USER_INSTALL_DIR: string] {
+
+  let version = ^$'($install_dir)\bin\nu.exe' --version | str trim
+  assert equal ($version_expected | str contains $version) true
+  print $'(ansi g)Installed Nu of the specified version: ($version)(ansi reset)'
 }

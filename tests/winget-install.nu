@@ -1,5 +1,8 @@
 
-use common.nu [check-user-install]
+use std/assert
+use common.nu [check-user-install, check-version-match]
+
+const VERSION = '0.104.1'
 
 def main [--scope: string] {
 
@@ -10,6 +13,7 @@ def main [--scope: string] {
   let scope_arg = if $scope in [user, machine] { [--scope $scope] } else { [] }
   winget settings --enable LocalManifestFiles
   winget settings --enable InstallerHashOverride
-  winget install --manifest manifests\n\Nushell\Nushell\0.104.1 ...$args ...$scope_arg
+  winget install --manifest manifests\n\Nushell\Nushell\($VERSION) ...$args ...$scope_arg
   check-user-install $install_dir
+  check-version-match $VERSION $install_dir
 }
