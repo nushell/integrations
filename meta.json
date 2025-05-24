@@ -1,6 +1,6 @@
 {
   "name": "nushell",
-  "version": "0.104.0",
+  "version": "0.104.1",
   "revision": "0",
   "pkgs": {
     "deb": true,
