@@ -1,7 +1,7 @@
 
 use std/assert
 use std/testing *
-use common.nu [check-user-install, check-version-match]
+use common.nu [check-user-install, check-version-match, get-latest-tag]
 
 
 @before-all
@@ -42,10 +42,3 @@ def 'msi-install：MSI should install successfully for per-user' [] {
   check-version-match $release_tag $install_dir
 }
 
-def get-latest-tag [] {
-  http get https://api.github.com/repos/nushell/nightly/releases
-    | sort-by -r created_at
-    | where tag_name =~ nightly
-    | get tag_name?.0?
-    | default ''
-}

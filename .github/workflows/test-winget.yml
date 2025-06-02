@@ -56,11 +56,16 @@ jobs:
         with:
           version: 'nightly'
 
+      - name: Install komac
+        run: |
+          winget install komac --accept-source-agreements --accept-package-agreements --disable-interactivity
+
       - name: Test Winget Install with Default Scope
         shell: nu {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          ls C:\Users\runneradmin\AppData\Local\Programs\Komac\bin\ | print
           nu tests/winget-install.nu
 
   user-scope:
@@ -85,9 +90,14 @@ jobs:
         with:
           version: 'nightly'
 
+      - name: Install komac
+        run: |
+          winget install komac --accept-source-agreements --accept-package-agreements --disable-interactivity
+
       - name: Test Winget Install with User Scope
         shell: nu {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          ls C:\Users\runneradmin\AppData\Local\Programs\Komac\bin\ | print
           nu tests/winget-install.nu --scope user
