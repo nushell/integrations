@@ -21,7 +21,7 @@ on:
       - '**.md'
       - 'docs/**'
   schedule:
-    - cron: '0 0 * * *'   # Run every morning at 0am UTC
+    - cron: '0 2 * * *'   # Run every morning at 2am UTC
 
 permissions:
   contents: read
