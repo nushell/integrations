@@ -61,6 +61,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          winget install komac --accept-source-agreements --accept-package-agreements --disable-interactivity
           nu tests/winget-install.nu
 
   user-scope:
@@ -90,4 +91,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          winget install komac --accept-source-agreements --accept-package-agreements --disable-interactivity
           nu tests/winget-install.nu --scope user

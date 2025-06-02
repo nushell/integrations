@@ -29,7 +29,6 @@ def main [--scope: string] {
 def prepare-manifest [] {
   let version = get-latest-tag | split row + | first
   let urls = get-download-url
-  winget install komac ...$WINGET_ARGS
   ls $'($nu.home-path)\AppData\Local\Programs\Komac\bin\' | print
   ^$KOMAC update Nushell.Nushell --dry-run -v $version -u  ...$urls -o (pwd)
 }
