@@ -1,8 +1,9 @@
 
 use std/assert
+use std/util ['path add']
 use common.nu [check-user-install, check-version-match, get-latest-tag]
 
-const KOMAC = $'($nu.home-path)\AppData\Local\Programs\Komac\bin\komac.exe'
+const KOMAC_PATH = $'($nu.home-path)\AppData\Local\Programs\Komac\bin\'
 
 const WINGET_ARGS = [
       --silent
@@ -29,8 +30,9 @@ def main [--scope: string] {
 def prepare-manifest [] {
   let version = get-latest-tag | split row + | first
   let urls = get-download-url
-  ls $'($nu.home-path)\AppData\Local\Programs\Komac\bin\' | print
-  ^$KOMAC update Nushell.Nushell --dry-run -v $version -u  ...$urls -o (pwd)
+  ls $KOMAC_PATH | print
+  komac --version | print
+  komac update Nushell.Nushell --dry-run -v $version -u  ...$urls -o (pwd)
 }
 
 def get-download-url [] {
