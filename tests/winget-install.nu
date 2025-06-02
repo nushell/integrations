@@ -30,6 +30,7 @@ def main [--scope: string] {
 def prepare-manifest [] {
   let version = get-latest-tag | split row + | first
   let urls = get-download-url
+  path add $KOMAC_PATH
   ls $KOMAC_PATH | print
   komac --version | print
   komac update Nushell.Nushell --dry-run -v $version -u  ...$urls -o (pwd)
