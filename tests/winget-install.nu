@@ -33,7 +33,7 @@ def prepare-manifest [] {
   path add $KOMAC_PATH
   ls $KOMAC_PATH | print
   komac --version | print
-  komac update Nushell.Nushell --dry-run -v $version -u  ...$urls -o (pwd)
+  komac update Nushell.Nushell --dry-run -v $version -u ...$urls -o (pwd)
 }
 
 def get-download-url [] {
