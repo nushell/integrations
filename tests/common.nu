@@ -88,3 +88,11 @@ export def check-version-match [version_expected: string, install_dir = $USER_IN
   assert equal ($version_expected | str contains $version) true
   print $'(ansi g)Installed Nu of the specified version: ($version)(ansi reset)'
 }
+
+export def get-latest-tag [] {
+  http get https://api.github.com/repos/nushell/nightly/releases
+    | sort-by -r created_at
+    | where tag_name =~ nightly
+    | get tag_name?.0?
+    | default ''
+}
