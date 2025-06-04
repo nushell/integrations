@@ -74,7 +74,7 @@ export def check-common-install [install_dir = $USER_INSTALL_DIR: string] {
   assert greater ($contents | length) 3
   assert equal ($PROFILE | path exists) true
   assert equal ($profile | get profiles.0.icon | path exists) true
-  assert equal ($profile | get profiles.0.commandline | path exists) true
+  assert equal ($profile | get profiles.0.commandline | str trim --char '"' | path exists) true
   print $'(ansi g)Windows Terminal Profile setup successfully...(ansi reset)'
   assert equal ($BINS | all {|it| $it in ($bins | get name) }) true
   print $'(ansi g)Nu binaries installed successfully...(ansi reset)'
