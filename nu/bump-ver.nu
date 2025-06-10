@@ -12,7 +12,7 @@ export def bump-version [
     exit 7
   }
 
-  if (has-ref $'($version)') {
+  if (has-ref $'($version)-($revision)') {
     print $'(ansi r)The tag of the specified version already exists: ($version)(ansi reset)'
     exit 5
   }
@@ -21,8 +21,8 @@ export def bump-version [
     | update version $version
     | update revision $revision
     | save -f meta.json
-  git commit -am $'chore: bump version to ($version)'
-  git tag -am $'chore: bump version to ($version)' $version
+  git commit -am $'chore: bump version to ($version) of revision ($revision)'
+  git tag -am $'chore: bump version to ($version)' $'($version)-($revision)'
   git push --follow-tags
 }
 
