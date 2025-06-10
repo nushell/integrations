@@ -24,7 +24,8 @@ const RELEASE_QUERY_URL = 'https://api.github.com/repos/nushell/nushell/releases
 
 # Fetch the latest Nushell release package from GitHub
 export def 'fetch release' [
-  arch: string,   # The target architecture, e.g. amd64 & arm64
+  arch: string,     # The target architecture, e.g. amd64 & arm64
+  version: string,  # The Nushell version to fetch, e.g. 0.105.0
 ] {
   const ARCH_MAP = {
     amd64: 'x86_64-unknown-linux-musl',
@@ -41,7 +42,8 @@ export def 'fetch release' [
     ]
   let assets = http get -H $BASE_HEADER $RELEASE_QUERY_URL
       | sort-by -r created_at
-      | select name created_at assets
+      | select name tag_name created_at assets
+      | where tag_name =~ $version
       | get 0
       | get assets.browser_download_url
   let download_url = $assets | where $it =~ ($ARCH_MAP | get $arch) | get 0
