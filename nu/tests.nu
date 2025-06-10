@@ -100,6 +100,7 @@ def "test Nu version is correct" [] {
 }
 
 def "test nu is added as a shell" [] {
+  cat /etc/shells | print
   let shell = cat /etc/shells
       | lines
       | where ($it | str contains "nu")
