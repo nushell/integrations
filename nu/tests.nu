@@ -109,6 +109,15 @@ def "test nu is added as a shell" [] {
   assert str contains $shell "/nu"
 }
 
+def 'test nu is not the only shell' [] {
+  let shells = cat /etc/shells
+      | lines
+      | where not ($it | str contains "nu")
+      | length
+
+  assert greater $shells 1
+}
+
 def "test main plugins are installed" [] {
   let plugins = (plugin list) | get name
 
