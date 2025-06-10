@@ -50,6 +50,7 @@ jobs:
         run: |
           use ${{ github.workspace }}/nu/release.nu *
           version | print
+          let version = open meta.json | get version
           echo $env.SIGNING_KEY o> key.gpg
           # $env | print
           let arch = match $env.RUNNER_ARCH {
@@ -57,7 +58,7 @@ jobs:
               'ARM64' => 'arm64',
               _ => 'amd64'
             }
-          fetch release $arch
+          fetch release $arch $version
           publish pkg $arch --create-release
           rm key.gpg
 
@@ -93,10 +94,11 @@ jobs:
         run: |
           use ${{ github.workspace }}/nu/release.nu *
           version | print
+          let version = open meta.json | get version
           echo $env.SIGNING_KEY o> key.gpg
-          fetch release riscv64
+          fetch release riscv64 $version
           publish pkg riscv64 --create-release
-          fetch release loongarch64
+          fetch release loongarch64 $version
           publish pkg loongarch64 --create-release
           rm key.gpg
 
