@@ -35,6 +35,11 @@ _query_plugin := if os_family() == 'windows' { 'nu_plugin_query.exe' } else { 'n
 default:
   @just --list --list-prefix "··· "
 
+# Bump Nushell version for supported Linux distributions
+bump *OPTIONS:
+  @overlay use {{ join(NU_DISTRO_PATH, 'nu', 'bump-ver.nu') }}; \
+    bump-version {{OPTIONS}}
+
 # Release a new version for Nushell
 release *OPTIONS:
   @overlay use {{ join(NU_DISTRO_PATH, 'nu', 'release.nu') }}; \
