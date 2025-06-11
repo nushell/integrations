@@ -1,13 +1,8 @@
 #!/usr/bin/env nu
-# Description:
-#   This script is used to test the Docker image of termix-nu.
-# Usage:
-#   Change to the directory where the Dockerfile is located and run:
-#   docker run -it --rm -v $"(pwd):/work" hustcer/termix:latest-alpine /work/tests/test-docker.nu
 
 use std assert
 
-const NU_VERSION = '0.104.0'
+const NU_VERSION = '0.105.0'
 
 def main [] {
   let test_plan = (
@@ -85,7 +80,7 @@ def format_error [error: string] {
     | str replace --all --regex " +" " "
 }
 
-def "test bin installed correctely" [] {
+def "test bin installed correctly" [] {
   const paths = [
     /usr/bin/nu,
     /usr/libexec/nushell/nu_plugin_inc,
@@ -132,7 +127,7 @@ def "test main plugins are installed" [] {
   assert ("query" in $plugins)
 }
 
-def "test config initialised" [] {
+def "test config initialized" [] {
   let files = ls ~/.config/nushell
       | select name size
       | where name ends-with '.nu'

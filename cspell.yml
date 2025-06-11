@@ -11,13 +11,16 @@ words:
 - dpkg
 - hkcu
 - hklm
+- nvim
 - maint
 - rsort
 - cnqoj
 - ECODE
+- KOMAC
 - riscv
 - gstat
 - loong
+- keymap
 - DISTRO
 - endfor
 - trixie
@@ -30,6 +33,7 @@ words:
 - nutest
 - winget
 - gpgkey
+- autocmd
 - debsign
 - msiexec
 - dearmor
@@ -38,6 +42,7 @@ words:
 - Gemfury
 - hustcer
 - rsbuild
+- APPNAME
 - ALLUSERS
 - modeline
 - gpgcheck
@@ -45,6 +50,7 @@ words:
 - lefthook
 - linewise
 - deepseek
+- lspconfig
 - Cyberboss
 - softprops
 - noconfirm
@@ -58,5 +64,9 @@ words:
 - goreleaser
 - rockylinux
 - Infinigence
+- autoloaded
+- Autocommands
+- LOCALAPPDATA
 - MSIINSTALLPERUSER
 ignorePaths:
+- nvim/init.lua
