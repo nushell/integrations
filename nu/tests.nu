@@ -72,9 +72,13 @@ def run_test [test: record<name: string, execute: closure>]: nothing -> record<n
 }
 
 def format_error [error: string] {
-  $error
-    # Get the value for the text key in a partly non-json error message
+  # Get the value for the text key in a partly non-json error message
+  let parsed = $error
     | parse --regex ".+text: \"(.+)\""
+  if ($parsed | is-empty) {
+    return ''
+  }
+  $parsed
     | first
     | get capture0
     | str replace --all --regex "\\\\n" " "
@@ -101,7 +105,7 @@ def "test Nu version is correct" [] {
 
 def "test nu is added as a shell" [] {
   cat /etc/shells | print
-  let shell = cat /etc/shells
+  let shell = open /etc/shells
       | lines
       | where ($it | str contains "nu")
       | first
@@ -110,12 +114,12 @@ def "test nu is added as a shell" [] {
 }
 
 def 'test nu is not the only shell' [] {
-  let shells = cat /etc/shells
+  let shells = open /etc/shells
       | lines
       | where not ($it | str contains "nu")
       | length
 
-  assert greater $shells 1
+  assert greater $shells 0
 }
 
 def "test main plugins are installed" [] {

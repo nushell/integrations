@@ -32,10 +32,18 @@ def 'setup-plugins' [] {
 
 # Add /usr/bin/nu to /etc/shells if it's not already there
 def 'add-shells' [] {
-  let shells = open /etc/shells
-  if not ($shells =~ $'/usr/bin/nu') {
-    echo $'/usr/bin/nu(char nl)' o>> /etc/shells
+  let content = open /etc/shells
+  const nu_bin = '/usr/bin/nu'
+  if ($content | str contains $nu_bin) {
+    return
   }
+  mut $new_line = $"($nu_bin)\n"
+  # Handle edge case when the content doesn't have ending newline,
+  # blindly appending the $new_line will end up writing to the same line.
+  if not ($content | str ends-with "\n") {
+    $new_line = "\n" ++ $new_line
+  }
+  echo $new_line o>> /etc/shells
 }
 
 def main [] {
