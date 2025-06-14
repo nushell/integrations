@@ -50,10 +50,13 @@ jobs:
           - fedora:39
           - rockylinux:9
           - rockylinux:8
+          - redhat/ubi10:latest
           - redhat/ubi9:latest
           - redhat/ubi8:latest
-          - almalinux:latest
+          # - almalinux:10
+          - almalinux:9
           - almalinux:8
+          - openeuler/openeuler:25.03
           - openeuler/openeuler:latest
           - openeuler/openeuler:22.03-lts
     runs-on: ${{ matrix.os }}
