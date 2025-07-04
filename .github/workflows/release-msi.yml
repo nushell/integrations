@@ -9,9 +9,9 @@ on:
     inputs:
       tag:
         required: true
-        description: 'Tag to Rebuild MSI'
-      version:
-        description: 'Version of Rebuild MSI'
+        description: 'Tag of nushell/nushell'
+      release:
+        description: 'Release Tag of Integrations'
 
 permissions:
   contents: write
@@ -67,14 +67,14 @@ jobs:
         OS: ${{ matrix.os }}
         REF: ${{ inputs.tag }}
         TARGET: ${{ matrix.target }}
-        MSI_VERSION: ${{ inputs.version }}
+        MSI_VERSION: ${{ inputs.tag }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # REF: https://github.com/marketplace/actions/gh-release
     - name: Publish Archive
       uses: softprops/action-gh-release@v2.0.5
       with:
-        tag_name: v${{ inputs.tag }}
+        tag_name: ${{ inputs.release }}
         files: ${{ steps.nu.outputs.msi }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -88,7 +88,7 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: >-
-        gh release download v${{ inputs.tag }}
+        gh release download ${{ inputs.release }}
         --repo ${{ github.repository }}
         --pattern '*'
         --dir release
@@ -98,6 +98,6 @@ jobs:
       uses: softprops/action-gh-release@v2.0.5
       with:
         files: SHA256SUMS
-        tag_name: v${{ inputs.tag }}
+        tag_name: ${{ inputs.release }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
