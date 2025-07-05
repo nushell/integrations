@@ -63,6 +63,7 @@ export def test-winget-per-user-install [] {
 export def test-winget-per-user-upgrade [] {
   print $'(char nl)Using winget to test MSI (ansi g)user scope(ansi reset) upgrade'
   print '-------------------------------------------------------------------'
+  # winget upgrade does not work for user scope due to https://github.com/microsoft/winget-cli/issues/3011
   winget install --manifest $'manifests\n\Nushell\Nushell\($LAST_VERSION)\' ...$WINGET_ARGS --scope user
   check-user-install $PER_USER_INSTALL_DIR
   check-version-match $LAST_VERSION $PER_USER_INSTALL_DIR
@@ -82,7 +83,7 @@ export def test-winget-per-machine-install [] {
 export def test-winget-per-machine-upgrade [] {
   print $'(char nl)Using winget to test MSI (ansi g)machine scope(ansi reset) upgrade'
   print '-------------------------------------------------------------------'
-  winget install --manifest $'manifests\n\Nushell\Nushell\($LAST_VERSION)\' ...$WINGET_ARGS --scope machine
+  winget upgrade --manifest $'manifests\n\Nushell\Nushell\($LAST_VERSION)\' ...$WINGET_ARGS
   check-local-machine-install
   check-version-match $LAST_VERSION $PER_MACHINE_INSTALL_DIR
   winget list nushell --accept-source-agreements
