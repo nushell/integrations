@@ -31,7 +31,7 @@ export def 'fetch release' [
     amd64: 'x86_64-unknown-linux-musl',
     arm64: 'aarch64-unknown-linux-musl',
     riscv64: 'riscv64gc-unknown-linux-gnu',
-    loongarch64: 'loongarch64-unknown-linux-gnu',
+    loongarch64: 'loongarch64-unknown-linux-musl',
   }
   if $arch not-in $ARCH_MAP {
     print $'Invalid architecture: (ansi r)($arch)(ansi reset)'; exit 1
@@ -110,7 +110,7 @@ export def 'push pkg' [
 ] {
   # Normalize architecture based on alias map if needed
   let normalized_arch = if $type in [apk, rpm] {
-      $ARCH_ALIAS_MAP | get -i $arch | default $arch
+      $ARCH_ALIAS_MAP | get -o $arch | default $arch
     } else { $arch }
 
   # Get package file based on architecture and type
