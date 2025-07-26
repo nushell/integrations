@@ -33,7 +33,7 @@ def main [--scope: string] {
   check-version-match $version $USER_INSTALL_DIR
 }
 
-def prepare-manifest [] {
+export def prepare-manifest [] {
   let version = get-latest-tag | split row + | first
   let urls = get-download-url
   path add $KOMAC_PATH
