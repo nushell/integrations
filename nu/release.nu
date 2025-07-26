@@ -31,7 +31,7 @@ export def 'fetch release' [
     amd64: 'x86_64-unknown-linux-musl',
     arm64: 'aarch64-unknown-linux-musl',
     riscv64: 'riscv64gc-unknown-linux-gnu',
-    loongarch64: 'loongarch64-unknown-linux-musl',
+    loongarch64: 'loongarch64-unknown-linux-gnu',
   }
   if $arch not-in $ARCH_MAP {
     print $'Invalid architecture: (ansi r)($arch)(ansi reset)'; exit 1
