@@ -1,7 +1,9 @@
 
 use std/assert
 use std/util ['path add']
-use common.nu [check-user-install, check-version-match, get-latest-tag]
+use common.nu [MACHINE_INSTALL_DIR, USER_INSTALL_DIR]
+use common.nu [check-user-install, check-local-machine-install, check-version-match, get-latest-tag]
+
 
 const KOMAC_PATH = $'($nu.home-path)\AppData\Local\Programs\Komac\bin\'
 
@@ -15,7 +17,6 @@ const WINGET_ARGS = [
 
 def main [--scope: string] {
   prepare-manifest
-  let install_dir = $'($nu.home-path)\AppData\Local\Programs\nu'
   let scope_tip = if $scope in [user, machine] { $'($scope) scope' } else { $'default scope' }
   print $'Using winget to test MSI (ansi g)($scope_tip)(ansi reset) installation'
   let version = get-latest-tag | split row + | first
@@ -23,8 +24,13 @@ def main [--scope: string] {
   winget settings --enable LocalManifestFiles
   winget settings --enable InstallerHashOverride
   winget install --manifest $'manifests\n\Nushell\Nushell\($version)\' ...$WINGET_ARGS ...$scope_arg
-  check-user-install $install_dir
-  check-version-match $version $install_dir
+  if $scope == 'machine' {
+    check-local-machine-install
+    check-version-match $version $MACHINE_INSTALL_DIR
+    return
+  }
+  check-user-install $USER_INSTALL_DIR
+  check-version-match $version $USER_INSTALL_DIR
 }
 
 def prepare-manifest [] {

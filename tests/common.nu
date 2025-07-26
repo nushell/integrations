@@ -11,8 +11,8 @@ const BINS = [
   nu_plugin_formats.exe,
 ]
 
-const MACHINE_INSTALL_DIR = 'C:\Program Files\nu'
-const USER_INSTALL_DIR = $'($nu.home-path)\AppData\Local\Programs\nu'
+export const MACHINE_INSTALL_DIR = 'C:\Program Files\nu'
+export const USER_INSTALL_DIR = $'($nu.home-path)\AppData\Local\Programs\nu'
 
 const ASSETS = [License.rtf README.txt nu.ico bin]
 
