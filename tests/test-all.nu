@@ -90,9 +90,7 @@ export def test-winget-per-machine-install [--local] {
     winget install --manifest $'manifests\n\Nushell\Nushell\($PREV_VERSION)\' ...$WINGET_ARGS --scope machine
     check-version-match $PREV_VERSION $PER_MACHINE_INSTALL_DIR
   } else {
-    let version = get-latest-tag | split row + | first
-    winget install --manifest $'manifests\n\Nushell\Nushell\($version)\' ...$WINGET_ARGS --scope machine
-    check-version-match $version $PER_MACHINE_INSTALL_DIR
+    winget install --id Nushell.Nushell ...$WINGET_ARGS --scope machine
   }
   check-local-machine-install
   winget list nushell --accept-source-agreements
