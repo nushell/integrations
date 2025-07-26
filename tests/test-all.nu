@@ -3,7 +3,8 @@
 # winget settings --enable LocalManifestFiles
 # winget settings --enable InstallerHashOverride
 
-use common.nu [check-user-install, check-version-match, check-local-machine-install]
+use winget-install.nu [prepare-manifest]
+use common.nu [check-user-install, check-version-match, check-local-machine-install, get-latest-tag]
 
 const VERSION = '0.105.1'
 const PREV_VERSION = '0.105.0'
@@ -19,15 +20,16 @@ const WINGET_ARGS = [
       --accept-package-agreements
     ]
 
-def main [--msi(-m)] {
-  if $msi {
+def main [--msi(-m), --local] {
+  if $msi and $local {
     test-msi-per-user-install
     test-msi-per-machine-install
   }
-  test-winget-per-user-install
-  test-winget-per-user-upgrade
-  test-winget-per-machine-install
-  test-winget-per-machine-upgrade
+  if not $local { prepare-manifest }
+  test-winget-per-user-install --local=$local
+  test-winget-per-user-upgrade --local=$local
+  test-winget-per-machine-install --local=$local
+  test-winget-per-machine-upgrade --local=$local
 }
 
 export def test-msi-per-user-install [] {
@@ -50,41 +52,63 @@ export def test-msi-per-machine-install [] {
   winget list nushell --accept-source-agreements
 }
 
-export def test-winget-per-user-install [] {
+export def test-winget-per-user-install [--local] {
   winget uninstall nushell | complete
   print $'(char nl)Using winget to test MSI (ansi g)user scope(ansi reset) installation'
   print '-------------------------------------------------------------------'
-  winget install --manifest $'manifests\n\Nushell\Nushell\($PREV_VERSION)\' ...$WINGET_ARGS --scope user
+  if $local {
+    winget install --manifest $'manifests\n\Nushell\Nushell\($PREV_VERSION)\' ...$WINGET_ARGS --scope user
+    check-version-match $PREV_VERSION $PER_USER_INSTALL_DIR
+  } else {
+    winget install --id Nushell.Nushell ...$WINGET_ARGS --scope user
+  }
   check-user-install $PER_USER_INSTALL_DIR
-  check-version-match $PREV_VERSION $PER_USER_INSTALL_DIR
   winget list nushell --accept-source-agreements
 }
 
-export def test-winget-per-user-upgrade [] {
+export def test-winget-per-user-upgrade [--local] {
   print $'(char nl)Using winget to test MSI (ansi g)user scope(ansi reset) upgrade'
   print '-------------------------------------------------------------------'
   # winget upgrade does not work for user scope due to https://github.com/microsoft/winget-cli/issues/3011
-  winget install --manifest $'manifests\n\Nushell\Nushell\($LAST_VERSION)\' ...$WINGET_ARGS --scope user
+  if $local {
+    winget install --manifest $'manifests\n\Nushell\Nushell\($LAST_VERSION)\' ...$WINGET_ARGS --scope user
+    check-version-match $LAST_VERSION $PER_USER_INSTALL_DIR
+  } else {
+    let version = get-latest-tag | split row + | first
+    winget install --manifest $'manifests\n\Nushell\Nushell\($version)\' ...$WINGET_ARGS --scope user
+    check-version-match $version $PER_USER_INSTALL_DIR
+  }
   check-user-install $PER_USER_INSTALL_DIR
-  check-version-match $LAST_VERSION $PER_USER_INSTALL_DIR
   winget list nushell --accept-source-agreements
 }
 
-export def test-winget-per-machine-install [] {
+export def test-winget-per-machine-install [--local] {
   winget uninstall nushell | complete
   print $'(char nl)Using winget to test MSI (ansi g)machine scope(ansi reset) installation'
   print '-------------------------------------------------------------------'
-  winget install --manifest $'manifests\n\Nushell\Nushell\($PREV_VERSION)\' ...$WINGET_ARGS --scope machine
+  if $local {
+    winget install --manifest $'manifests\n\Nushell\Nushell\($PREV_VERSION)\' ...$WINGET_ARGS --scope machine
+    check-version-match $PREV_VERSION $PER_MACHINE_INSTALL_DIR
+  } else {
+    let version = get-latest-tag | split row + | first
+    winget install --manifest $'manifests\n\Nushell\Nushell\($version)\' ...$WINGET_ARGS --scope machine
+    check-version-match $version $PER_MACHINE_INSTALL_DIR
+  }
   check-local-machine-install
-  check-version-match $PREV_VERSION $PER_MACHINE_INSTALL_DIR
   winget list nushell --accept-source-agreements
 }
 
-export def test-winget-per-machine-upgrade [] {
+export def test-winget-per-machine-upgrade [--local] {
   print $'(char nl)Using winget to test MSI (ansi g)machine scope(ansi reset) upgrade'
   print '-------------------------------------------------------------------'
-  winget upgrade --manifest $'manifests\n\Nushell\Nushell\($LAST_VERSION)\' ...$WINGET_ARGS
+  if $local {
+    winget upgrade --manifest $'manifests\n\Nushell\Nushell\($LAST_VERSION)\' ...$WINGET_ARGS
+    check-version-match $LAST_VERSION $PER_MACHINE_INSTALL_DIR
+  } else {
+    let version = get-latest-tag | split row + | first
+    winget upgrade --manifest $'manifests\n\Nushell\Nushell\($version)\' ...$WINGET_ARGS
+    check-version-match $version $PER_MACHINE_INSTALL_DIR
+  }
   check-local-machine-install
-  check-version-match $LAST_VERSION $PER_MACHINE_INSTALL_DIR
   winget list nushell --accept-source-agreements
 }
