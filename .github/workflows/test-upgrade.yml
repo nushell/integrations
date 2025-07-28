@@ -63,6 +63,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           use ${{ github.workspace }}/tests/test-all.nu *
+          use ${{ github.workspace }}/tests/winget-install.nu [prepare-manifest]
+          winget install komac --accept-source-agreements --accept-package-agreements --disable-interactivity
+          prepare-manifest
           test-winget-per-user-install
           test-winget-per-user-upgrade
           test-winget-per-machine-install
