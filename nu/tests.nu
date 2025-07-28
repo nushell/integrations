@@ -95,6 +95,7 @@ def "test bin installed correctly" [] {
 
 def "test Nu version is correct" [] {
   let version = nu --version
+  print $'Nushell version: ($version)'
   assert greater or equal (compare-ver $version $NU_VERSION) 0
 }
 
