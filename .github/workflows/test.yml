@@ -53,7 +53,7 @@ jobs:
           - redhat/ubi10:latest
           - redhat/ubi9:latest
           - redhat/ubi8:latest
-          # - almalinux:10
+          - almalinux:10
           - almalinux:9
           - almalinux:8
           - openeuler/openeuler:25.03
