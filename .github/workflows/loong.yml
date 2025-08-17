@@ -20,7 +20,7 @@ on:
 
 jobs:
   install-rpm-loong:
-    if: false
+    # if: false
     name: Install Nu RPM on Loong64
     strategy:
       fail-fast: false
