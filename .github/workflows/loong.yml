@@ -29,7 +29,8 @@ jobs:
           - ghcr.io/loong64/anolis:latest
           - loongarch64/openeuler:24.03-LTS
           - ghcr.io/loong64/opencloudos:latest
-          - cr.loongnix.cn/openanolis/anolisos:8.10
+          - cr.loongnix.cn/loongson/loongnix:20
+          # - cr.loongnix.cn/openanolis/anolisos:8.10
     runs-on: ubuntu-24.04-arm
     steps:
       - name: Set up QEMU
