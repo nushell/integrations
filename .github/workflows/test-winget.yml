@@ -40,10 +40,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install winget
-        if: ${{ matrix.os == 'windows-latest' }}
-        uses: Cyberboss/install-winget@v1
-
       - name: Upgrade Winget
         run: |
           winget --version
@@ -77,10 +73,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install winget
-        if: ${{ matrix.os == 'windows-latest' }}
-        uses: Cyberboss/install-winget@v1
-
       - name: Setup Nu
         uses: hustcer/setup-nu@v3
         with:
@@ -106,10 +98,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install winget
-        if: ${{ matrix.os == 'windows-latest' }}
-        uses: Cyberboss/install-winget@v1
 
       - name: Setup Nu
         uses: hustcer/setup-nu@v3
