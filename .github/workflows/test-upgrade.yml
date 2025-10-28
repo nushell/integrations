@@ -51,6 +51,11 @@ jobs:
         with:
           version: 'nightly'
 
+      - name: Install Komac Tool
+        shell: cmd
+        run: |
+          winget install komac --accept-source-agreements --accept-package-agreements --disable-interactivity
+
       - name: Test Nushell Upgrade
         shell: nu {0}
         env:
@@ -58,7 +63,6 @@ jobs:
         run: |
           use ${{ github.workspace }}/tests/test-all.nu *
           use ${{ github.workspace }}/tests/winget-install.nu [prepare-manifest]
-          winget install komac --accept-source-agreements --accept-package-agreements --disable-interactivity
           prepare-manifest
           test-winget-per-user-install
           test-winget-per-user-upgrade
