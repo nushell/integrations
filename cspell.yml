@@ -49,6 +49,7 @@ words:
 - justfile
 - lefthook
 - linewise
+- keyrings
 - deepseek
 - lspconfig
 - Cyberboss
