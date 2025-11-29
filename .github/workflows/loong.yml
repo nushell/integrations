@@ -39,7 +39,7 @@ jobs:
           platforms: all
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Test Install Nushell on Loong64
         run: |
           docker pull --platform=linux/loong64 ${{ matrix.image }}
@@ -81,7 +81,7 @@ jobs:
           platforms: all
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Test Install Nushell on Loong64
         run: |
           docker pull --platform=linux/loong64 ${{ matrix.image }}

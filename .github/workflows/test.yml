@@ -74,7 +74,7 @@ jobs:
           dnf install -y nushell
           nu -c 'version'
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Run Tests
         run: nu nu/tests.nu
 
@@ -94,7 +94,7 @@ jobs:
           sudo apt install nushell
           nu -c 'version'
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Run Tests
         run: nu nu/tests.nu
 
@@ -113,7 +113,7 @@ jobs:
           pacman -U --noconfirm nushell.pkg.tar.zst
           nu -c 'version'
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Run Tests
         run: nu nu/tests.nu
 
@@ -143,7 +143,7 @@ jobs:
           apt install nushell
           nu -c 'version'
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Run Tests
         run: nu nu/tests.nu
 
@@ -164,7 +164,7 @@ jobs:
           platforms: riscv64
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Test Install Nu on RISC-V
         run: |
           docker pull --platform=linux/riscv64 ${{ matrix.image }}
