@@ -13,7 +13,7 @@ def setup [] {
   gh release download $release_tag --repo nushell/nightly --pattern $"*-($arch)-*.msi"
   let msi = ls | where name =~ msi | get name.0
   print $'MSI File: ($msi)'
-  let install_dir = $'($nu.home-path)\AppData\Local\Programs\nu'
+  let install_dir = $'($nu.home-dir)\AppData\Local\Programs\nu'
   { msi: $msi, install_dir: $install_dir, release_tag: $release_tag }
 }
 

@@ -5,7 +5,7 @@ use common.nu [MACHINE_INSTALL_DIR, USER_INSTALL_DIR]
 use common.nu [check-user-install, check-local-machine-install, check-version-match, get-latest-tag]
 
 
-const KOMAC_PATH = $'($nu.home-path)\AppData\Local\Programs\Komac\bin\'
+const KOMAC_PATH = $'($nu.home-dir)\AppData\Local\Programs\Komac\bin\'
 
 const WINGET_ARGS = [
       --silent

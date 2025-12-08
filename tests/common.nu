@@ -12,11 +12,11 @@ const BINS = [
 ]
 
 export const MACHINE_INSTALL_DIR = 'C:\Program Files\nu'
-export const USER_INSTALL_DIR = $'($nu.home-path)\AppData\Local\Programs\nu'
+export const USER_INSTALL_DIR = $'($nu.home-dir)\AppData\Local\Programs\nu'
 
 const ASSETS = [License.rtf README.txt nu.ico bin]
 
-const PROFILE = $'($nu.home-path)\AppData\Local\Microsoft\Windows Terminal\Fragments\nu\nu.json'
+const PROFILE = $'($nu.home-dir)\AppData\Local\Microsoft\Windows Terminal\Fragments\nu\nu.json'
 
 # Run this command locally or in GitHub runners after installing nu
 export def check-user-install [install_dir = $USER_INSTALL_DIR: string] {

@@ -11,7 +11,7 @@ const PREV_VERSION = '0.105.0'
 const LAST_VERSION = '0.105.1'
 const MSI_PKG = 'wix\bin\x64\Release\nu-x64.msi'
 const PER_MACHINE_INSTALL_DIR = 'C:\Program Files\nu'
-const PER_USER_INSTALL_DIR = $'($nu.home-path)\AppData\Local\Programs\nu'
+const PER_USER_INSTALL_DIR = $'($nu.home-dir)\AppData\Local\Programs\nu'
 const WINGET_ARGS = [
       --silent
       --ignore-security-hash
