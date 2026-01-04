@@ -89,7 +89,7 @@ jobs:
       - name: Test Install Nushell DEB Package
         run: |
           wget -qO- https://apt.fury.io/nushell/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/fury-nushell.gpg
-          echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" | sudo tee /etc/apt/sources.list.d/fury.list
+          echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" | sudo tee /etc/apt/sources.list.d/fury-nu.list
           sudo apt update
           sudo apt install nushell
           nu -c 'version'
@@ -138,7 +138,7 @@ jobs:
           echo 'Acquire::https::Verify-Host "false";' | tee -a /etc/apt/apt.conf.d/99insecure
           # curl & gpg are not available in debian images, so we install without verifying the gpg key
           # Add the repository with trusted=yes so that apt does not verify package signatures
-          echo "deb [trusted=yes] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury.list
+          echo "deb [trusted=yes] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury-nu.list
           apt update
           apt install nushell
           nu -c 'version'
@@ -176,7 +176,7 @@ jobs:
           echo 'Acquire::https::Verify-Host "false";' | tee -a /etc/apt/apt.conf.d/99insecure
           # curl & gpg are not available in debian images, so we install without verifying the gpg key
           # Add the repository with trusted=yes so that apt does not verify package signatures
-          echo "deb [trusted=yes] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury.list
+          echo "deb [trusted=yes] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury-nu.list
           apt update
           apt install nushell
           nu -c 'version'

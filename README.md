@@ -11,7 +11,7 @@ Package and release the official Nushell binaries in `deb`, `rpm`, and `apk` etc
 
 ```nu
 wget -qO- https://apt.fury.io/nushell/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/fury-nushell.gpg
-echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" | sudo tee /etc/apt/sources.list.d/fury.list
+echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" | sudo tee /etc/apt/sources.list.d/fury-nu.list
 sudo apt update
 sudo apt install nushell
 which nu
