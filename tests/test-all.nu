@@ -33,7 +33,7 @@ def main [--msi(-m), --local] {
 }
 
 export def test-msi-per-user-install [] {
-  winget uninstall nushell | complete
+  try { winget uninstall nushell } catch { }
   print $'Using msiexec to test MSI (ansi g)per-user(ansi reset) installation'
   print '-------------------------------------------------------------------'
   msiexec /i $MSI_PKG MSIINSTALLPERUSER=1 /quiet /qn /L*V install.txt
@@ -43,7 +43,7 @@ export def test-msi-per-user-install [] {
 }
 
 export def test-msi-per-machine-install [] {
-  winget uninstall nushell | complete
+  try { winget uninstall nushell } catch { }
   print $'(char nl)Using msiexec to test MSI (ansi g)machine scope(ansi reset) installation'
   print '-------------------------------------------------------------------'
   msiexec /i $MSI_PKG ALLUSERS=1 /L*V install.txt
@@ -53,7 +53,7 @@ export def test-msi-per-machine-install [] {
 }
 
 export def test-winget-per-user-install [--local] {
-  winget uninstall nushell | complete
+  try { winget uninstall nushell } catch { }
   print $'(char nl)Using winget to test MSI (ansi g)user scope(ansi reset) installation'
   print '-------------------------------------------------------------------'
   if $local {
@@ -83,7 +83,7 @@ export def test-winget-per-user-upgrade [--local] {
 }
 
 export def test-winget-per-machine-install [--local] {
-  winget uninstall nushell | complete
+  try { winget uninstall nushell } catch { }
   print $'(char nl)Using winget to test MSI (ansi g)machine scope(ansi reset) installation'
   print '-------------------------------------------------------------------'
   if $local {
