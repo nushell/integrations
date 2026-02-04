@@ -43,7 +43,12 @@ export def prepare-manifest [] {
 }
 
 def get-download-url [] {
-  http get https://api.github.com/repos/nushell/nightly/releases
+  let headers = if ($env.GITHUB_TOKEN? | is-not-empty) {
+    { Authorization: $'Bearer ($env.GITHUB_TOKEN)' }
+  } else {
+    {}
+  }
+  http get -H $headers https://api.github.com/repos/nushell/nightly/releases
     | sort-by -r created_at
     | where tag_name =~ nightly | get assets.0.browser_download_url
     | where $it =~ 'msi'
