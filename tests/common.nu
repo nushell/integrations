@@ -90,7 +90,12 @@ export def check-version-match [version_expected: string, install_dir = $USER_IN
 }
 
 export def get-latest-tag [] {
-  http get https://api.github.com/repos/nushell/nightly/releases
+  let headers = if ($env.GITHUB_TOKEN? | is-not-empty) {
+    { Authorization: $'Bearer ($env.GITHUB_TOKEN)' }
+  } else {
+    {}
+  }
+  http get -H $headers https://api.github.com/repos/nushell/nightly/releases
     | sort-by -r created_at
     | where tag_name =~ nightly
     | get tag_name?.0?
