@@ -30,9 +30,8 @@ export def bump-version [
 export def has-ref [
   ref: string   # The git ref to check
 ] {
-  let checkRepo = (do -i { git rev-parse --is-inside-work-tree } | complete)
+  let checkRepo = git rev-parse --is-inside-work-tree | complete
   if not ($checkRepo.stdout =~ 'true') { return false }
-  # Brackets were required here, or error will occur
-  let parse = (do -i { git rev-parse --verify -q $ref } | complete)
-  if ($parse.stdout | is-empty) { false } else { true }
+  let parse = do { ^git rev-parse --verify -q $ref | complete }
+  ($parse.stdout | is-not-empty)
 }
