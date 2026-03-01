@@ -94,7 +94,9 @@ def create-github-release [
   let repo = 'nushell/integrations'
   let releases = gh release list -R $repo --json name | from json | get name
   if $version not-in $releases {
-    gh release create $version -R $repo --title $version
+    # Use try/catch to handle the race condition when multiple parallel jobs
+    # try to create the same release simultaneously
+    try { gh release create $version -R $repo --title $version }
   }
   # --clobber   Overwrite existing assets of the same name
   if $arch in $ALPINE_IGNORE {
