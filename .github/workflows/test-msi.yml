@@ -43,7 +43,9 @@ jobs:
       - name: Checkout Nutest Repo
         uses: actions/checkout@v6
         with:
-          ref: v1.1.0
+          # Includes the updated `returns.results` type annotation needed by
+          # recent Nushell nightlies.
+          ref: 097ca6839c861f3f9b7d8b702e92d712b621b8dd
           path: nutest
           repository: vyadh/nutest
           sparse-checkout: nutest/
