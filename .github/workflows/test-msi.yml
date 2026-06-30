@@ -53,7 +53,9 @@ jobs:
       - name: Setup Nu
         uses: hustcer/setup-nu@v3
         with:
-          version: 'nightly'
+          # This Nu runs nutest. The test itself still downloads and installs
+          # the latest MSI from nushell/nightly.
+          version: '0.113.1'
 
       - name: Test MSI Install
         shell: nu {0}
