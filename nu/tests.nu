@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-use std assert
+use std/assert
 
 const NU_VERSION = '0.105.0'
 
