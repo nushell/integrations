@@ -4,15 +4,18 @@
 
 set -e
 
+# Even with XDG_CONFIG_HOME, nu fails without a HOME variable set and UID
+# without a user account.
+# See https://github.com/nushell/nushell/issues/18902
+if [ -z "${HOME+x}" ]; then
+	export HOME="$PWD"
+fi
+
 # Running nu in the rpm-ostree script environment fails if the config directory
 # doesn't exist, preventing the post-install.nu script from being run.
-if [ -n "${XDG_CONFIG_HOME+x}" ]; then
-	mkdir -p "$XDG_CONFIG_HOME"
-elif [ -n "${HOME+x}" ]; then
-	mkdir -p "$HOME/.config"
-else
-	export XDG_CONFIG_HOME="$PWD/.config"
-	mkdir -p "$XDG_CONFIG_HOME"
+if [ -z "${XDG_CONFIG_HOME+x}" ]; then
+	export XDG_CONFIG_HOME="$HOME/.config"
 fi
+mkdir -p "$XDG_CONFIG_HOME"
 
 nu /usr/libexec/nushell/post-install.nu
