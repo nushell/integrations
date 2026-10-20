@@ -39,7 +39,12 @@ export def prepare-manifest [] {
   path add $KOMAC_PATH
   ls $KOMAC_PATH | print
   komac --version | print
+  # Komac 2.17+ returns before writing output in dry-run mode; CI pins 2.16.0.
   komac update Nushell.Nushell --dry-run -v $version -u ...$urls -o (pwd)
+  let manifest_dir = [manifests n Nushell Nushell $version] | path join
+  for filename in [Nushell.Nushell.yaml Nushell.Nushell.installer.yaml Nushell.Nushell.locale.en-US.yaml] {
+    assert ($manifest_dir | path join $filename | path exists) $'Komac did not generate ($filename) in ($manifest_dir)'
+  }
 }
 
 def get-download-url [] {

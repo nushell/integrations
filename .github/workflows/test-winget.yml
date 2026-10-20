@@ -55,7 +55,8 @@ jobs:
       - name: Install Komac Tool
         shell: cmd
         run: |
-          winget install komac --accept-source-agreements --accept-package-agreements --disable-interactivity
+          # Komac 2.17+ does not write manifests with --dry-run, even with -o.
+          winget install --id RussellBanks.Komac --exact --version 2.16.0 --accept-source-agreements --accept-package-agreements --disable-interactivity
 
       - name: Test Winget Install with Default Scope
         shell: nu {0}
@@ -85,7 +86,8 @@ jobs:
       - name: Install Komac Tool
         shell: cmd
         run: |
-          winget install komac --accept-source-agreements --accept-package-agreements --disable-interactivity
+          # Komac 2.17+ does not write manifests with --dry-run, even with -o.
+          winget install --id RussellBanks.Komac --exact --version 2.16.0 --accept-source-agreements --accept-package-agreements --disable-interactivity
 
       - name: Test Winget Install with User Scope
         shell: nu {0}
@@ -115,7 +117,8 @@ jobs:
       - name: Install Komac Tool
         shell: cmd
         run: |
-          winget install komac --accept-source-agreements --accept-package-agreements --disable-interactivity
+          # Komac 2.17+ does not write manifests with --dry-run, even with -o.
+          winget install --id RussellBanks.Komac --exact --version 2.16.0 --accept-source-agreements --accept-package-agreements --disable-interactivity
 
       - name: Test Winget Install with Machine Scope
         shell: nu {0}
