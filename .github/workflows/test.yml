@@ -18,6 +18,26 @@ on:
       - '**.md'
 
 jobs:
+  package-hooks:
+    name: Test package hooks (${{ matrix.image }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [ubuntu:24.04, alpine:latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup Nushell
+        uses: hustcer/setup-nu@v3
+      - name: Pull test image
+        run: docker pull ${{ matrix.image }}
+      - name: Test package hooks
+        run: nu --no-config-file tests/package-hooks.nu --image ${{ matrix.image }}
+
   install-apk:
     name: Install Nu apk
     strategy:
@@ -185,4 +205,4 @@ jobs:
 
           chmod +x install-nu.sh
           # Run the container with QEMU emulation
-          docker run --platform=linux/riscv64 --rm -v $(pwd):/work ${{ matrix.image }} bash /work/install-nu.sh
+          docker run --platform=linux/riscv64 --rm -v "$(pwd):/work" ${{ matrix.image }} bash /work/install-nu.sh
