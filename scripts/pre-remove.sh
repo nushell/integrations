@@ -1,6 +1,7 @@
 #!/bin/sh
 # Author: hustcer
 # Created: 2025/03/10 08:35:20
+# cspell:words ostree roothome
 
 set -e
 
@@ -11,33 +12,21 @@ if [ -z "${HOME:-}" ]; then
 	export HOME="${PWD:-/}"
 fi
 
-# Atomic images may have /root -> /var/roothome without the target directory.
-# Create the target first: mkdir -p cannot traverse a dangling symlink.
-if [ -L "$HOME" ] && [ ! -e "$HOME" ]; then
-	home_target=$HOME
-	link_count=0
-	while [ -L "$home_target" ]; do
-		if [ "$link_count" -ge 40 ]; then
-			printf 'Cannot resolve HOME: too many symbolic links: %s\n' "$HOME" >&2
-			exit 1
-		fi
-		link_target=$(readlink "$home_target")
-		case "$link_target" in
-			/*) home_target=$link_target ;;
-			*) home_target=$(dirname "$home_target")/$link_target ;;
-		esac
-		link_count=$((link_count + 1))
-	done
-	(
-		umask 077
-		mkdir -p "$home_target"
-	)
-fi
-
-# Running nu in the rpm-ostree script environment fails if the config directory
-# doesn't exist, preventing the pre-remove.nu script from being run.
+# Running nu in the rpm-ostree script environment requires a config directory.
 if [ -z "${XDG_CONFIG_HOME:-}" ]; then
 	export XDG_CONFIG_HOME="$HOME/.config"
+fi
+
+# Repair only the standard Atomic root home when using its default config path.
+# An explicit config path elsewhere must not require creating HOME.
+if [ "$HOME" = /root ] && [ "$XDG_CONFIG_HOME" = /root/.config ] &&
+	[ -L /root ] && [ ! -e /root ] && [ ! -L /var ] &&
+	[ ! -e /var/roothome ] && [ ! -L /var/roothome ]; then
+	case "$(readlink /root)" in
+		/var/roothome|var/roothome)
+			mkdir -m 0700 /var/roothome
+			;;
+	esac
 fi
 mkdir -p "$XDG_CONFIG_HOME"
 
